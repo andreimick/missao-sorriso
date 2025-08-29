@@ -17,7 +17,6 @@ body {
 
 #game-container {
     position: relative;
-    /* Tamanho padrão para telas grandes (16:9) */
     width: 960px;
     height: 540px;
     border: 4px solid #fff;
@@ -49,7 +48,6 @@ body {
     display: none;
 }
 
-/* Efeito de transição */
 .screen-fade-out {
     animation: fadeOut 0.5s ease-in-out forwards;
 }
@@ -114,7 +112,6 @@ p {
     z-index: 1;
 }
 
-/* Novo estilo para a caixa de diálogo de instruções */
 .dialogue-box.instructions-overlay {
     position: fixed;
     top: 50%;
@@ -326,7 +323,6 @@ p {
     z-index: 20;
 }
 
-/* Novos estilos para a tela final */
 .end-card {
     background-color: rgba(255, 255, 255, 0.95);
     padding: 40px;

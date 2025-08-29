@@ -18,7 +18,7 @@ const toolCursor = document.getElementById('tool-cursor');
 const helpIcon = document.getElementById('help-icon');
 const toolPalette = document.getElementById('tool-palette');
 const toolBrushIcon = document.getElementById('tool-toothbrush');
-const toolDrillIcon = document.getElementById('tool-drill');
+const toolDrillIcon = document('tool-drill');
 const toolFillingIcon = document.getElementById('tool-filling');
 const infoBar = document.getElementById('info-bar');
 
@@ -79,25 +79,6 @@ const childPosDesktop = {
     y: 250,
     width: childImageWidthDesktop,
     height: childImageHeightDesktop
-};
-
-// Dimensões e posicionamento dos personagens para MOBILE (NOVAS POSIÇÕES)
-const dentistImageWidthMobile = 150;
-const dentistImageHeightMobile = 225;
-const childImageWidthMobile = 150;
-const childImageHeightMobile = 225;
-
-const dentistPosMobile = {
-    x: 20,
-    y: 20,
-    width: dentistImageWidthMobile,
-    height: dentistImageHeightMobile
-};
-const childPosMobile = {
-    x: GAME_WIDTH - childImageWidthMobile - 20,
-    y: 20,
-    width: childImageWidthMobile,
-    height: childImageHeightMobile
 };
 
 // Posição do dente (centralizado)
@@ -415,12 +396,16 @@ function startHigienizationPhase() {
 function generateDirt() {
     dirt = [];
     const DIRT_COUNT = 20;
+    // Ajusta a área de geração de sujeira para dentro do toothBoundingBox
+    const paddingX = toothBoundingBox.width * 0.15; // 15% de padding
+    const paddingY = toothBoundingBox.height * 0.15; // 15% de padding
+
     for (let i = 0; i < DIRT_COUNT; i++) {
         const randomIndex = Math.floor(Math.random() * carieImages.length);
         const image = assets[carieImages[randomIndex]];
         dirt.push({
-            x: toothBoundingBox.x + Math.random() * toothBoundingBox.width,
-            y: toothBoundingBox.y + Math.random() * toothBoundingBox.height,
+            x: toothBoundingBox.x + paddingX + Math.random() * (toothBoundingBox.width - 2 * paddingX),
+            y: toothBoundingBox.y + paddingY + Math.random() * (toothBoundingBox.height - 2 * paddingY),
             radius: 5 + Math.random() * 5,
             image: image,
             width: 30,
@@ -438,6 +423,7 @@ function startFillingPhase() {
 }
 
 function generateCavity() {
+    // Posiciona a cárie no centro do dente
     cavity.x = toothBoundingBox.x + toothBoundingBox.width / 2;
     cavity.y = toothBoundingBox.y + toothBoundingBox.height / 2;
     cavity.radius = 25 + Math.random() * 10;
@@ -566,8 +552,8 @@ function getCoords(event) {
     const x = clientX - rect.left;
     const y = clientY - rect.top;
 
-    const scaledX = (x / rect.width) * GAME_WIDTH;
-    const scaledY = (y / rect.height) * GAME_HEIGHT;
+    const scaledX = (x / rect.width) * canvas.width;
+    const scaledY = (y / rect.height) * canvas.height;
 
     return {
         x: scaledX,
@@ -587,7 +573,7 @@ function handleInteraction(e) {
         for (let i = dirt.length - 1; i >= 0; i--) {
             const d = dirt[i];
             const distance = Math.sqrt(Math.pow(mouseX - d.x, 2) + Math.pow(mouseY - d.y, 2));
-            if (distance < d.radius + 15) {
+            if (distance < d.radius + 15) { // Aumenta a área de detecção para facilitar o toque
                 dirt.splice(i, 1);
                 score += 10;
                 scoreDisplay.textContent = `Pontos: ${score}`;
@@ -601,7 +587,7 @@ function handleInteraction(e) {
         }
     } else if (currentState === GAME_STATE.TREATMENT && currentTool === 'drill') {
         const distance = Math.sqrt(Math.pow(mouseX - cavity.x, 2) + Math.pow(mouseY - cavity.y, 2));
-        if (distance < cavity.radius + 15 && cavity.damage > 0) {
+        if (distance < cavity.radius + 15 && cavity.damage > 0) { // Aumenta a área de detecção
             cavity.damage -= 2;
             score += 2;
             scoreDisplay.textContent = `Pontos: ${score}`;
@@ -614,7 +600,7 @@ function handleInteraction(e) {
         }
     } else if (currentState === GAME_STATE.FILLING && currentTool === 'filling') {
         const distance = Math.sqrt(Math.pow(mouseX - cavity.x, 2) + Math.pow(mouseY - cavity.y, 2));
-        if (distance < cavity.radius + 15 && cavity.filled < 100) {
+        if (distance < cavity.radius + 15 && cavity.filled < 100) { // Aumenta a área de detecção
             cavity.filled += 3;
             score += 3;
             scoreDisplay.textContent = `Pontos: ${score}`;
@@ -640,71 +626,75 @@ function draw() {
 
     // Lógica de redimensionamento do canvas
     const isMobile = window.innerWidth <= 768;
-    const finalWidth = isMobile ? 540 : 960;
-    const finalHeight = isMobile ? 960 : 540;
+    const finalWidth = isMobile ? 540 : 960; // Largura lógica para mobile (9:16) ou desktop (16:9)
+    const finalHeight = isMobile ? 960 : 540; // Altura lógica
 
     canvas.width = finalWidth;
     canvas.height = finalHeight;
 
     ctx.clearRect(0, 0, finalWidth, finalHeight);
 
-    // Posições dos personagens para desktop e mobile
-    const dentistPos = isMobile ? {
-        x: 20,
-        y: 20,
-        width: 150,
-        height: 225
-    } : {
-        x: 50,
-        y: 250,
-        width: 200,
-        height: 300
-    };
-    const childPos = isMobile ? {
-        x: finalWidth - 150 - 20,
-        y: 20,
-        width: 150,
-        height: 225
-    } : {
-        x: 550,
-        y: 250,
-        width: 200,
-        height: 300
-    };
-    
-    // Reposiciona o dente para o centro da nova tela
-    const toothImageWidth = 120 * 2;
-    const toothImageHeight = 80 * 2;
-    const toothBoundingBox = {
-        x: (finalWidth / 2) - (toothImageWidth / 2),
-        y: (finalHeight / 2) - (toothImageHeight / 2),
-        width: toothImageWidth,
-        height: toothImageHeight
-    };
+    // Posições dos personagens e dente dependendo do dispositivo
+    let currentDentistPos, currentChildPos;
+    let currentToothBoundingBox;
+
+    if (isMobile) {
+        currentDentistPos = {
+            x: 20,
+            y: 100, // Ajuste para ficar acima da info-bar e tool-palette
+            width: 150,
+            height: 225
+        };
+        currentChildPos = {
+            x: finalWidth - 150 - 20,
+            y: 100, // Ajuste para ficar acima da info-bar e tool-palette
+            width: 150,
+            height: 225
+        };
+        currentToothBoundingBox = {
+            x: (finalWidth / 2) - (toothImageWidth / 2),
+            y: (finalHeight / 2) - (toothImageHeight / 2),
+            width: toothImageWidth,
+            height: toothImageHeight
+        };
+    } else {
+        currentDentistPos = dentistPosDesktop;
+        currentChildPos = childPosDesktop;
+        currentToothBoundingBox = toothBoundingBox; // Usa a global toothBoundingBox para desktop
+    }
 
     if (assets['character_dentist.png']) {
-        ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
+        ctx.drawImage(assets['character_dentist.png'], currentDentistPos.x, currentDentistPos.y, currentDentistPos.width, currentDentistPos.height);
     }
     if (assets['character_child.png']) {
-        ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
+        ctx.drawImage(assets['character_child.png'], currentChildPos.x, currentChildPos.y, currentChildPos.width, currentChildPos.height);
     }
 
-    if (currentState === GAME_STATE.HIGIENIZATION) {
-        if (assets['tooth_model.png']) {
-            ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
-        }
+    // Desenha o dente
+    if (assets['tooth_model.png']) {
+        ctx.drawImage(assets['tooth_model.png'], currentToothBoundingBox.x, currentToothBoundingBox.y, currentToothBoundingBox.width, currentToothBoundingBox.height);
+    }
 
+    // Atualiza a posição da cavidade e sujeira para o novo toothBoundingBox
+    if (currentState === GAME_STATE.HIGIENIZATION) {
+        if (dirt.length === 0) {
+            // Regenerar sujeira para garantir que esteja alinhada ao novo tamanho do dente
+            generateDirt();
+        }
         dirt.forEach(d => {
             if (d.image) {
+                // As posições da sujeira já foram geradas com base no toothBoundingBox, então elas devem se alinhar
                 ctx.drawImage(d.image, d.x - d.width / 2, d.y - d.height / 2, d.width, d.height);
             }
         });
     }
 
     if (currentState === GAME_STATE.TREATMENT || currentState === GAME_STATE.FILLING) {
-        if (assets['tooth_model.png']) {
-            ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
-        }
+        // As coordenadas da cárie já estão centralizadas no dente
+        const carieX = currentToothBoundingBox.x + currentToothBoundingBox.width / 2;
+        const carieY = currentToothBoundingBox.y + currentToothBoundingBox.height / 2;
+        cavity.x = carieX; // Atualiza a posição da cavidade
+        cavity.y = carieY;
 
         if (cavity.damage > 0 && cavity.image) {
             const opacity = cavity.damage / 100;

@@ -20,7 +20,7 @@ const toolPalette = document.getElementById('tool-palette');
 const toolBrushIcon = document.getElementById('tool-toothbrush');
 const toolDrillIcon = document.getElementById('tool-drill');
 const toolFillingIcon = document.getElementById('tool-filling');
-const infoBar = document.getElementById('info-bar');
+const infoBar = document = document.getElementById('info-bar');
 
 // Elementos do Quiz
 const quizContainer = document.getElementById('quiz-container');
@@ -54,8 +54,8 @@ let dirt = [];
 let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null }; 
 let currentTool = '';
 let assetsLoaded = false;
-// A bounding box do dente agora é centralizada, garantindo que ele caiba na tela
-let toothBoundingBox = { x: GAME_WIDTH / 2 - (120 * 2) / 2, y: GAME_HEIGHT / 2 - (80 * 2) / 2, width: 120 * 2, height: 80 * 2 };
+// Posição centralizada para o dente na tela
+let toothBoundingBox = { x: 270, y: 300, width: 120 * 2, height: 80 * 2 };
 
 const quizQuestions = [
     { question: "Qual a idade ideal para ensinar hábitos de higiene bucal?", options: ["A partir dos 10 anos", "Entre 4 e 6 anos", "Na adolescência", "Apenas quando a criança pede"], answer: "Entre 4 e 6 anos" },
@@ -247,7 +247,7 @@ helpIcon.addEventListener('click', () => {
         instructionsText = `
             Bem-vindo ao Missão Sorriso!
             <br><br>
-            Seu objetivo é ajudar nosso pequeno paciente a ter um sorriso saudável. Siga as instruções da Dra. Sofia para cada etapa do tratamento.
+            Seu objetivo é transformar o sorriso de uma criança. Siga as instruções para cada etapa do tratamento.
             <br><br>
             **Toque no botão 'Iniciar' para começar a aventura!**
         `;
@@ -257,7 +257,7 @@ helpIcon.addEventListener('click', () => {
             <br><br>
             - **Objetivo:** Limpe os dentes, remova a cárie e restaure o sorriso do nosso paciente.
             <br>
-            - **Como Jogar:** Use a paleta de ferramentas para selecionar a ferramenta correta para cada etapa.
+            - **Como Jogar:** Use a paleta de ferramentas no canto superior direito para selecionar a ferramenta correta para cada etapa.
             <br>
             - **Selecione a ferramenta** e arraste o mouse ou o dedo sobre a área de tratamento para começar a trabalhar.
             <br>
@@ -549,16 +549,16 @@ function draw() {
 
     ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    // Personagens removidos para liberar espaço na tela do celular
-    // const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
-    // const childPos = { x: 550, y: 250, width: 200, height: 300 };
+    // Personagens são incluídos novamente aqui
+    const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
+    const childPos = { x: 550, y: 250, width: 200, height: 300 };
     
-    // if (assets['character_dentist.png']) {
-    //     ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
-    // }
-    // if (assets['character_child.png']) {
-    //     ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
-    // }
+    if (assets['character_dentist.png']) {
+        ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
+    }
+    if (assets['character_child.png']) {
+        ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
+    }
     
     if (currentState === GAME_STATE.HIGIENIZATION) {
         if (assets['tooth_model.png']) {

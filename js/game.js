@@ -56,7 +56,7 @@ let currentTool = '';
 let assetsLoaded = false;
 
 // Dimensões e posicionamento dos personagens e do dente
-// Redimensionamento para a nova proporção 16:9
+// Ajuste o posicionamento para a nova proporção 16:9
 const dentistImageWidth = 200;
 const dentistImageHeight = 300;
 const childImageWidth = 200;

@@ -20,10 +20,6 @@ body {
     /* Tamanho padrão para telas grandes (16:9) */
     width: 960px;
     height: 540px;
-    /* Adiciona lógica de redimensionamento para telas pequenas */
-    max-width: 100vw;
-    max-height: 100vh;
-    aspect-ratio: 16 / 9;
     border: 4px solid #fff;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
@@ -384,10 +380,6 @@ p {
 /* Media Query para telas menores (mobile) */
 @media (max-width: 768px) {
     #game-container {
-        /*
-        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção.
-        Ele vai se encaixar perfeitamente, seja na orientação retrato ou paisagem.
-        */
         width: 100vw;
         height: calc(100vw * (16 / 9));
         max-height: 100vh;
@@ -411,8 +403,7 @@ p {
     
     /* Paleta de ferramentas no mobile: mais baixa e centralizada */
     #tool-palette {
-        top: auto; /* Remove o top */
-        bottom: 10px; /* Posiciona na parte inferior */
+        top: 60px; /* Posiciona logo abaixo da info-bar */
         right: 50%;
         left: auto;
         transform: translateX(50%);
@@ -431,7 +422,8 @@ p {
     /* Barra de info e ícone de ajuda no topo, menores e alinhados */
     #info-bar {
         top: 10px;
-        left: 10px;
+        left: 50%; /* Centraliza a barra de info */
+        transform: translateX(-50%);
         padding: 8px 12px;
         font-size: 1em;
     }
@@ -446,7 +438,7 @@ p {
     }
 
     #dialogue-box {
-        bottom: 70px; /* Ajusta a posição para não colidir com a paleta de ferramentas */
+        bottom: 20px; /* Ajusta a posição para não colidir com a paleta de ferramentas */
         width: 95%;
         padding: 15px;
     }

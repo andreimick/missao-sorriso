@@ -27,9 +27,9 @@ const quizContainer = document.getElementById('quiz-container');
 const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
-// Configurações do Jogo - Dimensões LÓGICAS do canvas
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 600;
+// Configurações do Jogo - Dimensões LÓGICAS do canvas (NOVA PROPORÇÃO 16:9)
+const GAME_WIDTH = 960;
+const GAME_HEIGHT = 540;
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 
@@ -56,6 +56,7 @@ let currentTool = '';
 let assetsLoaded = false;
 
 // Dimensões e posicionamento dos personagens e do dente
+// Redimensionamento para a nova proporção 16:9
 const dentistImageWidth = 200;
 const dentistImageHeight = 300;
 const childImageWidth = 200;
@@ -271,7 +272,7 @@ helpIcon.addEventListener('click', () => {
             <br><br>
             - **Objetivo:** Limpe os dentes, remova a cárie e restaure o sorriso do nosso paciente.
             <br>
-            - **Como Jogar:** Use a paleta de ferramentas no canto superior direito para selecionar a ferramenta correta para cada etapa.
+            - **Como Jogar:** Use a paleta de ferramentas para selecionar a ferramenta correta para cada etapa.
             <br>
             - **Selecione a ferramenta** e arraste o mouse ou o dedo sobre a área de tratamento para começar a trabalhar.
             <br>
@@ -386,7 +387,7 @@ function startQuizPhase() {
     deactivateTool();
     toolPalette.classList.add('hidden');
     infoBar.classList.add('hidden');
-    
+
     selectedQuizQuestions = shuffleAndSelect(quizQuestions, 10);
     currentQuizQuestionIndex = 0;
     quizCorrectAnswers = 0;
@@ -402,7 +403,7 @@ function showQuizQuestion() {
     quizContainer.classList.remove('hidden');
 
     const currentQuestion = selectedQuizQuestions[currentQuizQuestionIndex];
-    
+
     quizQuestionText.textContent = `Pergunta ${currentQuizQuestionIndex + 1} de ${selectedQuizQuestions.length}: ${currentQuestion.question}`;
     quizOptionsContainer.innerHTML = '';
 
@@ -444,7 +445,7 @@ function checkAnswer(selectedBtn, isCorrect) {
 function endQuiz() {
     quizContainer.classList.add('hidden');
     switchScreen(GAME_STATE.END);
-    
+
     endScreen.innerHTML = `
         <div class="end-card">
             <h1 id="end-title" class="end-title">Parabéns! Missão Concluída!</h1>
@@ -480,7 +481,7 @@ function endQuiz() {
 function getCoords(event) {
     const rect = canvas.getBoundingClientRect();
     let clientX, clientY;
-    
+
     if (event.touches && event.touches.length > 0) {
         clientX = event.touches[0].clientX;
         clientY = event.touches[0].clientY;
@@ -495,7 +496,10 @@ function getCoords(event) {
     const scaledX = (x / rect.width) * GAME_WIDTH;
     const scaledY = (y / rect.height) * GAME_HEIGHT;
 
-    return { x: scaledX, y: scaledY };
+    return {
+        x: scaledX,
+        y: scaledY
+    };
 }
 
 
@@ -564,21 +568,31 @@ function draw() {
     ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     // Posições dos personagens (fixo no espaço lógico do canvas)
-    const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
-    const childPos = { x: 550, y: 250, width: 200, height: 300 };
-    
+    const dentistPos = {
+        x: 50,
+        y: 250,
+        width: 200,
+        height: 300
+    };
+    const childPos = {
+        x: 550,
+        y: 250,
+        width: 200,
+        height: 300
+    };
+
     if (assets['character_dentist.png']) {
         ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
     }
     if (assets['character_child.png']) {
         ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
     }
-    
+
     if (currentState === GAME_STATE.HIGIENIZATION) {
         if (assets['tooth_model.png']) {
             ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
         }
-        
+
         dirt.forEach(d => {
             if (d.image) {
                 ctx.drawImage(d.image, d.x - d.width / 2, d.y - d.height / 2, d.width, d.height);
@@ -600,7 +614,7 @@ function draw() {
             ctx.drawImage(cavity.image, cavity.x - imgWidth / 2, cavity.y - imgHeight / 2, imgWidth, imgHeight);
             ctx.restore();
         }
-        
+
         if (cavity.damage > 0 || (currentState === GAME_STATE.FILLING && cavity.filled < 100)) {
             const guideColor = currentState === GAME_STATE.TREATMENT ? 'rgba(255, 255, 255, 0.3)' : 'rgba(180, 255, 180, 0.5)';
             ctx.fillStyle = guideColor;
@@ -608,7 +622,7 @@ function draw() {
             ctx.arc(cavity.x, cavity.y, cavity.radius, 0, Math.PI * 2);
             ctx.fill();
         }
-        
+
         if (currentState === GAME_STATE.FILLING && cavity.filled > 0) {
             const fillRadius = cavity.radius * (cavity.filled / 100);
             ctx.fillStyle = `rgba(180, 255, 180, 1)`;
@@ -617,7 +631,7 @@ function draw() {
             ctx.fill();
         }
     }
-    
+
     requestAnimationFrame(draw);
 }
 
@@ -649,7 +663,9 @@ canvas.addEventListener('touchmove', (e) => {
     if (isInteracting) {
         handleInteraction(e);
     }
-}, { passive: false });
+}, {
+    passive: false
+});
 
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
@@ -657,7 +673,9 @@ canvas.addEventListener('touchstart', (e) => {
         isMouseDown = true;
         handleInteraction(e);
     }
-}, { passive: false });
+}, {
+    passive: false
+});
 
 canvas.addEventListener('touchend', () => {
     handleMouseUp();

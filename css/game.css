@@ -12,6 +12,7 @@ body {
     color: #333;
     text-align: center;
     cursor: auto;
+    overflow: hidden;
 }
 
 #game-container {
@@ -107,6 +108,8 @@ p {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 1;
 }
 
@@ -351,4 +354,52 @@ p {
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
+}
+
+/* **Ajustes para mobile** */
+@media (max-width: 768px) {
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: calc(100vw * (600 / 800)); /* Mantém a proporção 4:3 para a largura total */
+        border-radius: 0;
+    }
+
+    /* Move a paleta e o ícone de ajuda para a parte inferior para facilitar o uso com os polegares */
+    #tool-palette {
+        top: auto;
+        right: 50%;
+        bottom: 15px;
+        transform: translateX(50%);
+        gap: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 10px 20px;
+        border-radius: 20px;
+    }
+
+    #help-icon {
+        top: 15px;
+        left: 15px;
+        width: 35px;
+        height: 35px;
+    }
+
+    #info-bar {
+        top: 15px;
+        right: 15px;
+        left: auto;
+        padding: 5px 10px;
+        font-size: 0.9em;
+    }
+
+    #dialogue-box {
+        bottom: 10px;
+        width: 95%;
+        padding: 15px;
+    }
+
+    #dialogue-text {
+        font-size: 0.9em;
+    }
 }

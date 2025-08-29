@@ -1,4 +1,3 @@
-/* game.css */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 body {
@@ -13,17 +12,12 @@ body {
     color: #333;
     text-align: center;
     cursor: auto;
-    /* Evita rolagem horizontal em telas pequenas */
-    overflow-x: hidden;
 }
 
 #game-container {
     position: relative;
-    /* Usa porcentagem para largura e uma largura máxima para telas grandes */
-    width: 95%; 
-    max-width: 800px;
-    /* Usa proporção para a altura para manter a relação de aspecto */
-    aspect-ratio: 4 / 3;
+    width: 800px;
+    height: 600px;
     border: 4px solid #fff;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
@@ -78,15 +72,13 @@ body {
 
 #start-screen h1, #end-screen h1 {
     color: #00796b;
-    /* Tamanho de fonte responsivo */
-    font-size: clamp(1.5em, 5vw, 3em);
+    font-size: 3em;
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 p {
-    /* Tamanho de fonte responsivo */
-    font-size: clamp(0.9em, 2vw, 1.2em);
+    font-size: 1.2em;
     max-width: 600px;
 }
 
@@ -94,9 +86,8 @@ p {
     background-color: #00796b;
     color: #fff;
     border: none;
-    /* Padding responsivo */
-    padding: clamp(10px, 3vw, 15px) clamp(20px, 6vw, 30px);
-    font-size: clamp(1em, 2.5vw, 1.2em);
+    padding: 15px 30px;
+    font-size: 1.2em;
     border-radius: 50px;
     cursor: pointer;
     margin-top: 20px;
@@ -117,9 +108,6 @@ p {
     top: 0;
     left: 0;
     z-index: 1;
-    /* Garante que o canvas ocupe todo o container */
-    width: 100%;
-    height: 100%;
 }
 
 /* Novo estilo para a caixa de diálogo de instruções */
@@ -144,7 +132,7 @@ p {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    width: 90%;
+    width: 80%;
     max-width: 600px;
     background-color: rgba(0, 0, 0, 0.85);
     color: white;
@@ -158,7 +146,7 @@ p {
 
 #dialogue-text {
     margin: 0 0 20px 0;
-    font-size: clamp(0.9em, 2vw, 1.1em);
+    font-size: 1.1em;
     line-height: 1.5;
 }
 
@@ -216,8 +204,8 @@ p {
 }
 
 #tool-palette img {
-    width: clamp(25px, 5vw, 35px);
-    height: clamp(25px, 5vw, 35px);
+    width: 35px;
+    height: 35px;
     cursor: pointer;
     border: 2px solid transparent;
     border-radius: 50%;
@@ -253,7 +241,7 @@ p {
 
 #quiz-question {
     color: #004d40;
-    font-size: clamp(1.2em, 4vw, 1.8em);
+    font-size: 1.8em;
     font-weight: 700;
 }
 
@@ -269,7 +257,7 @@ p {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 18px;
-    font-size: clamp(1em, 2.5vw, 1.2em);
+    font-size: 1.2em;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -289,14 +277,14 @@ p {
     position: absolute;
     top: 70px;
     left: 20px;
-    width: clamp(30px, 6vw, 40px);
-    height: clamp(30px, 6vw, 40px);
+    width: 40px;
+    height: 40px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(1em, 3vw, 1.5em);
+    font-size: 1.5em;
     font-weight: bold;
     color: #00796b;
     cursor: pointer;
@@ -328,14 +316,14 @@ p {
 }
 
 .end-title {
-    font-size: clamp(1.5em, 5vw, 2.5em);
+    font-size: 2.5em;
     font-weight: 700;
     color: #004d40;
     margin: 0;
 }
 
 .end-text {
-    font-size: clamp(0.9em, 2vw, 1.2em);
+    font-size: 1.2em;
     color: #555;
     margin: 0;
 }
@@ -350,7 +338,7 @@ p {
 
 .score-container p {
     margin: 5px 0;
-    font-size: clamp(1em, 2vw, 1.3em);
+    font-size: 1.3em;
 }
 
 .score-container b {
@@ -363,11 +351,4 @@ p {
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
-}
-
-@media (max-width: 800px) {
-    body {
-        /* Permite rolagem vertical se o conteúdo for muito grande */
-        overflow-y: auto;
-    }
 }

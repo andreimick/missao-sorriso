@@ -55,16 +55,20 @@ let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null };
 let currentTool = '';
 let assetsLoaded = false;
 
-// Dimensões originais do modelo do dente para referência
-const originalToothWidth = 240; // 120 * 2
-const originalToothHeight = 160; // 80 * 2
+// Dimensões e posicionamento dos personagens e do dente
+const dentistImageWidth = 200;
+const dentistImageHeight = 300;
+const childImageWidth = 200;
+const childImageHeight = 300;
+const toothImageWidth = 120 * 2;
+const toothImageHeight = 80 * 2;
 
-// Posição e tamanho do dente, centralizado e escalado
+// Posição do dente
 let toothBoundingBox = {
-    x: (GAME_WIDTH / 2) - (originalToothWidth / 2),
-    y: (GAME_HEIGHT / 2) - (originalToothHeight / 2),
-    width: originalToothWidth,
-    height: originalToothHeight
+    x: (GAME_WIDTH / 2) - (toothImageWidth / 2),
+    y: (GAME_HEIGHT / 2) - (toothImageHeight / 2),
+    width: toothImageWidth,
+    height: toothImageHeight
 };
 
 const quizQuestions = [
@@ -559,32 +563,15 @@ function draw() {
 
     ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    // Redimensionamento e posicionamento dinâmico dos personagens
-    // Proporções para o dentista (ajustar conforme a imagem real)
-    const dentistOriginalWidth = 200; // Largura original da imagem
-    const dentistOriginalHeight = 300; // Altura original da imagem
-    const dentistScale = 0.8; // Fator de escala para o dentista
-    const scaledDentistWidth = dentistOriginalWidth * dentistScale;
-    const scaledDentistHeight = dentistOriginalHeight * dentistScale;
-    // Posição: 10% da largura da esquerda, 50% da altura para centralizar verticalmente
-    const dentistX = GAME_WIDTH * 0.1; 
-    const dentistY = GAME_HEIGHT / 2 - scaledDentistHeight / 2;
+    // Posições dos personagens (fixo no espaço lógico do canvas)
+    const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
+    const childPos = { x: 550, y: 250, width: 200, height: 300 };
     
-    // Proporções para a criança (ajustar conforme a imagem real)
-    const childOriginalWidth = 200; // Largura original da imagem
-    const childOriginalHeight = 300; // Altura original da imagem
-    const childScale = 0.8; // Fator de escala para a criança
-    const scaledChildWidth = childOriginalWidth * childScale;
-    const scaledChildHeight = childOriginalHeight * childScale;
-    // Posição: 90% da largura da direita, 50% da altura para centralizar verticalmente
-    const childX = GAME_WIDTH * 0.9 - scaledChildWidth; 
-    const childY = GAME_HEIGHT / 2 - scaledChildHeight / 2;
-
     if (assets['character_dentist.png']) {
-        ctx.drawImage(assets['character_dentist.png'], dentistX, dentistY, scaledDentistWidth, scaledDentistHeight);
+        ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
     }
     if (assets['character_child.png']) {
-        ctx.drawImage(assets['character_child.png'], childX, childY, scaledChildWidth, scaledChildHeight);
+        ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
     }
     
     if (currentState === GAME_STATE.HIGIENIZATION) {

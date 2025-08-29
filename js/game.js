@@ -13,7 +13,7 @@ const dialogueText = document.getElementById('dialogue-text');
 const dialogueOptions = document.getElementById('dialogue-options');
 const scoreDisplay = document.getElementById('score-display');
 const endTitle = document.getElementById('end-title');
-const endText = document = document.getElementById('end-text');
+const endText = document.getElementById('end-text');
 const toolCursor = document.getElementById('tool-cursor');
 const helpIcon = document.getElementById('help-icon');
 const toolPalette = document.getElementById('tool-palette');
@@ -27,7 +27,7 @@ const quizContainer = document.getElementById('quiz-container');
 const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
-// Configurações do Jogo - Dimensões LÓGICAS do canvas (NOVA PROPORÇÃO 16:9)
+// Configurações do Jogo - Dimensões LÓGICAS do canvas
 const GAME_WIDTH = 960;
 const GAME_HEIGHT = 540;
 canvas.width = GAME_WIDTH;
@@ -625,29 +625,30 @@ function draw() {
     }
 
     const isMobile = window.innerWidth <= 768;
-    const finalWidth = isMobile ? window.innerWidth : GAME_WIDTH;
-    const finalHeight = isMobile ? window.innerHeight : GAME_HEIGHT;
-
-    canvas.width = finalWidth;
-    canvas.height = finalHeight;
-
-    ctx.clearRect(0, 0, finalWidth, finalHeight);
-
-    // Ajusta a proporção do canvas para o modo mobile
+    
+    // Dimensões lógicas do canvas
+    const logicalWidth = 960;
+    const logicalHeight = 540;
+    
+    canvas.width = logicalWidth;
+    canvas.height = logicalHeight;
+    ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+    
+    // Ajusta a escala do canvas para o modo mobile
     if (isMobile) {
-        const containerRatio = finalWidth / finalHeight;
-        const gameRatio = GAME_WIDTH / GAME_HEIGHT;
+        const containerRatio = window.innerWidth / window.innerHeight;
+        const gameRatio = logicalWidth / logicalHeight;
 
         let scale = 1;
         let x = 0;
         let y = 0;
 
         if (containerRatio > gameRatio) {
-            scale = finalHeight / GAME_HEIGHT;
-            x = (finalWidth - GAME_WIDTH * scale) / 2;
+            scale = window.innerHeight / logicalHeight;
+            x = (window.innerWidth - logicalWidth * scale) / 2;
         } else {
-            scale = finalWidth / GAME_WIDTH;
-            y = (finalHeight - GAME_HEIGHT * scale) / 2;
+            scale = window.innerWidth / logicalWidth;
+            y = (window.innerHeight - logicalHeight * scale) / 2;
         }
 
         ctx.setTransform(scale, 0, 0, scale, x, y);
@@ -656,9 +657,12 @@ function draw() {
     // Posições dos personagens e dente dependendo do dispositivo
     let currentDentistPos, currentChildPos;
     let currentToothBoundingBox;
+    
+    const toothScale = isMobile ? 1.5 : 1;
+    const toothWidth = toothImageWidth * toothScale;
+    const toothHeight = toothImageHeight * toothScale;
 
     if (isMobile) {
-        // Posições mobile
         currentDentistPos = {
             x: 20,
             y: 100, // Acima da info-bar e tool-palette
@@ -666,19 +670,18 @@ function draw() {
             height: 225
         };
         currentChildPos = {
-            x: GAME_WIDTH - 150 - 20,
+            x: logicalWidth - 150 - 20,
             y: 100, // Acima da info-bar e tool-palette
             width: 150,
             height: 225
         };
         currentToothBoundingBox = {
-            x: (GAME_WIDTH / 2) - (120 * 2 / 2),
-            y: (GAME_HEIGHT / 2) - (80 * 2 / 2),
-            width: 120 * 2,
-            height: 80 * 2
+            x: (logicalWidth / 2) - (toothWidth / 2),
+            y: (logicalHeight / 2) - (toothHeight / 2),
+            width: toothWidth,
+            height: toothHeight
         };
     } else {
-        // Posições desktop
         currentDentistPos = dentistPosDesktop;
         currentChildPos = childPosDesktop;
         currentToothBoundingBox = toothBoundingBox;
@@ -741,7 +744,8 @@ function draw() {
             ctx.fill();
         }
     }
-
+    
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     requestAnimationFrame(draw);
 }
 

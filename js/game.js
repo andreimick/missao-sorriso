@@ -28,8 +28,10 @@ const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
 // Configurações do Jogo
-let GAME_WIDTH;
-let GAME_HEIGHT;
+const GAME_WIDTH = 800;
+const GAME_HEIGHT = 600;
+canvas.width = GAME_WIDTH;
+canvas.height = GAME_HEIGHT;
 
 // Estados do Jogo
 const GAME_STATE = {
@@ -52,7 +54,7 @@ let dirt = [];
 let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null }; 
 let currentTool = '';
 let assetsLoaded = false;
-let toothBoundingBox = { x: 0, y: 0, width: 0, height: 0 };
+let toothBoundingBox = { x: 270, y: 300, width: 120 * 2, height: 80 * 2 };
 
 const quizQuestions = [
     { question: "Qual a idade ideal para ensinar hábitos de higiene bucal?", options: ["A partir dos 10 anos", "Entre 4 e 6 anos", "Na adolescência", "Apenas quando a criança pede"], answer: "Entre 4 e 6 anos" },
@@ -72,27 +74,12 @@ let currentQuizQuestionIndex = 0;
 
 const assets = {};
 const assetList = [
-    // Caminhos corrigidos com base na sua estrutura de pastas
-    'background.jpg', 
-    'character_dentist.png', 
-    'character_child.png', 
-    'toothbrush.png', 
-    'dental_tools/drill.png', 
-    'dental_tools/filling.png', 
-    'tooth_model.png',
-    'caries/carie1.png', 
-    'caries/carie2.png', 
-    'caries/carie3.png', 
-    'caries/carie4.png', 
-    'caries/carie5.png'
+    'background.jpg', 'character_dentist.png', 'character_child.png', 'toothbrush.png', 'dental_tools/drill.png', 'dental_tools/filling.png', 'tooth_model.png',
+    'caries/carie1.png', 'caries/carie2.png', 'caries/carie3.png', 'caries/carie4.png', 'caries/carie5.png'
 ];
 
 const carieImages = [
-    'caries/carie1.png', 
-    'caries/carie2.png', 
-    'caries/carie3.png', 
-    'caries/carie4.png', 
-    'caries/carie5.png'
+    'caries/carie1.png', 'caries/carie2.png', 'caries/carie3.png', 'caries/carie4.png', 'caries/carie5.png'
 ];
 
 function loadAssets() {
@@ -181,6 +168,7 @@ function switchScreen(state) {
         startFillingPhase();
         showDialogue(story.filling);
     } else if (state === GAME_STATE.QUIZ) {
+        // CORREÇÃO: Removendo o delay para transição instantânea
         mainScreen.classList.add('hidden');
         mainScreen.classList.remove('screen-fade-out');
         quizScreen.classList.remove('hidden');
@@ -271,7 +259,7 @@ helpIcon.addEventListener('click', () => {
             <br>
             - **Como Jogar:** Use a paleta de ferramentas no canto superior direito para selecionar a ferramenta correta para cada etapa.
             <br>
-            - **Toque ou clique** na ferramenta e arraste o dedo/mouse sobre a área de tratamento para começar a trabalhar.
+            - **Selecione a ferramenta** e arraste o mouse ou o dedo sobre a área de tratamento para começar a trabalhar.
             <br>
             - **Conclua as 3 etapas** (higienização, tratamento e restauração) e responda um quiz para vencer o jogo!
         `;
@@ -469,22 +457,33 @@ function endQuiz() {
     deactivateTool();
 }
 
+/**
+ * Obtém as coordenadas X e Y do evento, seja de mouse ou toque.
+ * @param {Event} event O evento do mouse ou toque.
+ * @returns {{x: number, y: number}} As coordenadas ajustadas.
+ */
+function getCoords(event) {
+    const rect = canvas.getBoundingClientRect();
+    let x, y;
+    
+    // Verifica se é um evento de toque
+    if (event.touches && event.touches.length > 0) {
+        x = event.touches[0].clientX - rect.left;
+        y = event.touches[0].clientY - rect.top;
+    } else { // É um evento de mouse
+        x = event.clientX - rect.left;
+        y = event.clientY - rect.top;
+    }
+    return { x, y };
+}
+
 function handleInteraction(e) {
     if (!isInteracting || !isMouseDown) return;
 
-    // Converte coordenadas do evento para coordenadas do canvas
-    const rect = canvas.getBoundingClientRect();
-    let clientX, clientY;
-    if (e.touches) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-    } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-    }
-    const mouseX = (clientX - rect.left) * (canvas.width / rect.width);
-    const mouseY = (clientY - rect.top) * (canvas.height / rect.height);
-    
+    const coords = getCoords(e);
+    const mouseX = coords.x;
+    const mouseY = coords.y;
+
     if (currentState === GAME_STATE.HIGIENIZATION && currentTool === 'toothbrush') {
         for (let i = dirt.length - 1; i >= 0; i--) {
             const d = dirt[i];
@@ -530,10 +529,6 @@ function handleInteraction(e) {
     }
 }
 
-function handleMouseDown() {
-    isMouseDown = true;
-}
-
 function handleMouseUp() {
     isMouseDown = false;
 }
@@ -544,11 +539,10 @@ function draw() {
         return;
     }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    // Usa dimensões dinâmicas para o posicionamento
-    const dentistPos = { x: canvas.width * 0.05, y: canvas.height * 0.4, width: canvas.width * 0.25, height: canvas.height * 0.5 };
-    const childPos = { x: canvas.width * 0.65, y: canvas.height * 0.4, width: canvas.width * 0.25, height: canvas.height * 0.5 };
+    const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
+    const childPos = { x: 550, y: 250, width: 200, height: 300 };
     
     if (assets['character_dentist.png']) {
         ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
@@ -557,11 +551,6 @@ function draw() {
         ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
     }
     
-    toothBoundingBox.x = canvas.width * 0.35;
-    toothBoundingBox.y = canvas.height * 0.5;
-    toothBoundingBox.width = canvas.width * 0.3;
-    toothBoundingBox.height = canvas.height * 0.25;
-
     if (currentState === GAME_STATE.HIGIENIZATION) {
         if (assets['tooth_model.png']) {
             ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
@@ -609,35 +598,55 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-function handleResize() {
-    const rect = gameContainer.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    draw(); // Redesenha a cena para o novo tamanho
-}
-
 // Inicialização e Event Listeners
 startBtn.addEventListener('click', () => {
     switchScreen(GAME_STATE.DIALOGUE);
 });
 
-// Event listeners para mouse
-canvas.addEventListener('mousemove', handleInteraction);
-canvas.addEventListener('mousedown', handleMouseDown);
-canvas.addEventListener('mouseup', handleMouseUp);
+// Eventos do Mouse
+canvas.addEventListener('mousemove', (e) => {
+    if (isInteracting) {
+        handleInteraction(e);
+    }
+});
 
-// Event listeners para toque
-canvas.addEventListener('touchmove', handleInteraction, { passive: false });
-canvas.addEventListener('touchstart', handleMouseDown);
-canvas.addEventListener('touchend', handleMouseUp);
+canvas.addEventListener('mousedown', () => {
+    if (isInteracting) {
+        isMouseDown = true;
+    }
+});
 
-// Event listener para redimensionamento da janela
-window.addEventListener('resize', handleResize);
+canvas.addEventListener('mouseup', () => {
+    handleMouseUp();
+});
+
+// Eventos de Toque
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault(); // Evita a rolagem da página
+    if (isInteracting) {
+        handleInteraction(e);
+    }
+}, { passive: false });
+
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (isInteracting) {
+        isMouseDown = true;
+        // Permite a interação já no toque inicial
+        handleInteraction(e); 
+    }
+}, { passive: false });
+
+canvas.addEventListener('touchend', () => {
+    handleMouseUp();
+});
+
+initGame();
 
 function initGame() {
     const screens = [loadingScreen, startScreen, mainScreen, quizScreen, endScreen];
     screens.forEach(s => s.classList.add('hidden'));
     loadingScreen.classList.remove('hidden');
-    handleResize(); // Define o tamanho inicial do canvas
+
     loadAssets();
 }

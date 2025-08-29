@@ -28,10 +28,8 @@ const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
 // Configurações do Jogo
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 600;
-canvas.width = GAME_WIDTH;
-canvas.height = GAME_HEIGHT;
+let GAME_WIDTH;
+let GAME_HEIGHT;
 
 // Estados do Jogo
 const GAME_STATE = {
@@ -54,7 +52,7 @@ let dirt = [];
 let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null }; 
 let currentTool = '';
 let assetsLoaded = false;
-let toothBoundingBox = { x: 270, y: 300, width: 120 * 2, height: 80 * 2 };
+let toothBoundingBox = { x: 0, y: 0, width: 0, height: 0 };
 
 const quizQuestions = [
     { question: "Qual a idade ideal para ensinar hábitos de higiene bucal?", options: ["A partir dos 10 anos", "Entre 4 e 6 anos", "Na adolescência", "Apenas quando a criança pede"], answer: "Entre 4 e 6 anos" },
@@ -168,7 +166,6 @@ function switchScreen(state) {
         startFillingPhase();
         showDialogue(story.filling);
     } else if (state === GAME_STATE.QUIZ) {
-        // CORREÇÃO: Removendo o delay para transição instantânea
         mainScreen.classList.add('hidden');
         mainScreen.classList.remove('screen-fade-out');
         quizScreen.classList.remove('hidden');
@@ -259,7 +256,7 @@ helpIcon.addEventListener('click', () => {
             <br>
             - **Como Jogar:** Use a paleta de ferramentas no canto superior direito para selecionar a ferramenta correta para cada etapa.
             <br>
-            - **Selecione a ferramenta** e arraste o mouse sobre a área de tratamento para começar a trabalhar.
+            - **Toque ou clique** na ferramenta e arraste o dedo/mouse sobre a área de tratamento para começar a trabalhar.
             <br>
             - **Conclua as 3 etapas** (higienização, tratamento e restauração) e responda um quiz para vencer o jogo!
         `;
@@ -460,10 +457,19 @@ function endQuiz() {
 function handleInteraction(e) {
     if (!isInteracting || !isMouseDown) return;
 
+    // Converte coordenadas do evento para coordenadas do canvas
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
+    let clientX, clientY;
+    if (e.touches) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+    const mouseX = (clientX - rect.left) * (canvas.width / rect.width);
+    const mouseY = (clientY - rect.top) * (canvas.height / rect.height);
+    
     if (currentState === GAME_STATE.HIGIENIZATION && currentTool === 'toothbrush') {
         for (let i = dirt.length - 1; i >= 0; i--) {
             const d = dirt[i];
@@ -523,10 +529,11 @@ function draw() {
         return;
     }
 
-    ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
-    const childPos = { x: 550, y: 250, width: 200, height: 300 };
+    // Usa dimensões dinâmicas para o posicionamento
+    const dentistPos = { x: canvas.width * 0.05, y: canvas.height * 0.4, width: canvas.width * 0.25, height: canvas.height * 0.5 };
+    const childPos = { x: canvas.width * 0.65, y: canvas.height * 0.4, width: canvas.width * 0.25, height: canvas.height * 0.5 };
     
     if (assets['character_dentist.png']) {
         ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
@@ -535,6 +542,11 @@ function draw() {
         ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
     }
     
+    toothBoundingBox.x = canvas.width * 0.35;
+    toothBoundingBox.y = canvas.height * 0.5;
+    toothBoundingBox.width = canvas.width * 0.3;
+    toothBoundingBox.height = canvas.height * 0.25;
+
     if (currentState === GAME_STATE.HIGIENIZATION) {
         if (assets['tooth_model.png']) {
             ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
@@ -582,33 +594,35 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
+function handleResize() {
+    const rect = gameContainer.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    draw(); // Redesenha a cena para o novo tamanho
+}
+
 // Inicialização e Event Listeners
 startBtn.addEventListener('click', () => {
     switchScreen(GAME_STATE.DIALOGUE);
 });
 
-canvas.addEventListener('mousemove', (e) => {
-    if (isInteracting) {
-        handleInteraction(e);
-    }
-});
+// Event listeners para mouse
+canvas.addEventListener('mousemove', handleInteraction);
+canvas.addEventListener('mousedown', handleMouseDown);
+canvas.addEventListener('mouseup', handleMouseUp);
 
-canvas.addEventListener('mousedown', () => {
-    if (isInteracting) {
-        handleMouseDown();
-    }
-});
+// Event listeners para toque
+canvas.addEventListener('touchmove', handleInteraction, { passive: false });
+canvas.addEventListener('touchstart', handleMouseDown);
+canvas.addEventListener('touchend', handleMouseUp);
 
-canvas.addEventListener('mouseup', () => {
-    handleMouseUp();
-});
-
-initGame();
+// Event listener para redimensionamento da janela
+window.addEventListener('resize', handleResize);
 
 function initGame() {
     const screens = [loadingScreen, startScreen, mainScreen, quizScreen, endScreen];
     screens.forEach(s => s.classList.add('hidden'));
     loadingScreen.classList.remove('hidden');
-
+    handleResize(); // Define o tamanho inicial do canvas
     loadAssets();
 }

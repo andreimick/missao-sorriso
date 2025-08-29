@@ -17,18 +17,18 @@ body {
 
 #game-container {
     position: relative;
-    /* Nova proporção 16:9 */
+    /* Tamanho padrão para telas grandes (16:9) */
     width: 960px;
     height: 540px;
+    /* Adiciona lógica de redimensionamento para telas pequenas */
+    max-width: 100vw;
+    max-height: 100vh;
+    aspect-ratio: 16 / 9;
     border: 4px solid #fff;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     background-color: #fff;
-    /* Redimensionamento para telas menores */
-    max-width: 100vw;
-    max-height: 100vh;
-    aspect-ratio: 16 / 9;
 }
 
 .game-screen {
@@ -381,85 +381,96 @@ p {
     margin-top: 20px;
 }
 
-/* Media Query para telas menores */
+/* Media Query para telas menores (celulares) */
 @media (max-width: 768px) {
     #game-container {
         /*
         Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção.
-        Ele vai se encaixar perfeitamente, seja na orientação retrato ou paisagem.
+        A lógica de 'min' e 'max' garante que o jogo sempre se encaixe na tela
+        sem ser cortado, seja no modo retrato ou paisagem.
         */
         width: 100vw;
-        height: calc(100vw * (9 / 16));
-        max-height: 100vh;
-        max-width: 100vh;
+        height: 100vh;
+        max-width: min(calc(100vh * (16 / 9)), 100vw);
+        max-height: min(calc(100vw * (9 / 16)), 100vh);
         border-radius: 0;
-        /* Adiciona uma pequena margem para garantir que não fique grudado nas bordas */
-        margin: 5px;
     }
 
-    #game-container::before {
-        content: '';
-        display: block;
-        padding-top: calc(100% * (9 / 16));
+    /* Reduz o tamanho de fontes e botões para melhor usabilidade em mobile */
+    #start-screen h1,
+    #end-screen h1 {
+        font-size: 2em;
     }
-
-    /* Diminui o tamanho e o espaçamento das barras de informações */
+    
+    p {
+        font-size: 1em;
+    }
+    
+    .main-btn {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+    
+    /* Reposiciona a paleta de ferramentas para a parte inferior */
     #tool-palette {
-        top: 5px;
-        right: 5px;
-        padding: 5px;
-        gap: 5px;
-    }
-    #tool-palette img {
-        width: 30px;
-        height: 30px;
-    }
-    #info-bar {
-        top: 5px;
-        left: 5px;
-        padding: 5px 8px;
-        font-size: 0.9em;
-    }
-    #help-icon {
         top: auto;
-        bottom: 5px;
-        right: 5px;
+        bottom: 10px;
+        right: 50%;
+        left: auto;
+        transform: translateX(50%);
+        padding: 8px;
+        gap: 10px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    #tool-palette img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* A barra de informações e o ícone de ajuda no topo ficam menores e organizados */
+    #info-bar {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 1em;
+    }
+    
+    #help-icon {
+        top: 10px;
+        right: 10px;
         left: auto;
         width: 35px;
         height: 35px;
         font-size: 1.2em;
     }
-
-    /* Reduz o tamanho de fontes e botões para melhor usabilidade em mobile */
-    #start-screen h1, #end-screen h1 {
-        font-size: 2em;
-    }
-    p {
-        font-size: 1em;
-    }
-    .main-btn {
-        padding: 12px 25px;
-        font-size: 1em;
-    }
+    
     #dialogue-box {
-        bottom: 10px;
+        bottom: 70px; /* Ajusta a posição para não colidir com a paleta de ferramentas */
         width: 95%;
         padding: 15px;
     }
+    
     #dialogue-text {
         font-size: 0.9em;
     }
+    
     .option-btn {
         padding: 10px 15px;
         font-size: 0.9em;
     }
+    
     #quiz-container {
         padding: 20px;
         gap: 20px;
     }
+    
     #quiz-question {
         font-size: 1.3em;
     }
+    
     .quiz-btn {
         padding: 12px;
         font-size: 1em;

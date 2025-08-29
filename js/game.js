@@ -72,12 +72,27 @@ let currentQuizQuestionIndex = 0;
 
 const assets = {};
 const assetList = [
-    'background.jpg', 'character_dentist.png', 'character_child.png', 'toothbrush.png', 'dental_tools/drill.png', 'dental_tools/filling.png', 'tooth_model.png',
-    'caries/carie1.png', 'caries/carie2.png', 'caries/carie3.png', 'caries/carie4.png', 'caries/carie5.png'
+    // Caminhos corrigidos com base na sua estrutura de pastas
+    'background.jpg', 
+    'character_dentist.png', 
+    'character_child.png', 
+    'toothbrush.png', 
+    'dental_tools/drill.png', 
+    'dental_tools/filling.png', 
+    'tooth_model.png',
+    'caries/carie1.png', 
+    'caries/carie2.png', 
+    'caries/carie3.png', 
+    'caries/carie4.png', 
+    'caries/carie5.png'
 ];
 
 const carieImages = [
-    'caries/carie1.png', 'caries/carie2.png', 'caries/carie3.png', 'caries/carie4.png', 'caries/carie5.png'
+    'caries/carie1.png', 
+    'caries/carie2.png', 
+    'caries/carie3.png', 
+    'caries/carie4.png', 
+    'caries/carie5.png'
 ];
 
 function loadAssets() {

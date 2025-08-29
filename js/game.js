@@ -17,10 +17,10 @@ const endText = document.getElementById('end-text');
 const toolCursor = document.getElementById('tool-cursor');
 const helpIcon = document.getElementById('help-icon');
 const toolPalette = document.getElementById('tool-palette');
-const toolBrushIcon = document.getElementById('tool-toothbrush');
-const toolDrillIcon = document.getElementById('tool-drill');
-const toolFillingIcon = document.getElementById('tool-filling');
-const infoBar = document.getElementById('info-bar');
+const toolBrushIcon = document = document.getElementById('tool-toothbrush');
+const toolDrillIcon = document = document.getElementById('tool-drill');
+const toolFillingIcon = document = document.getElementById('tool-filling');
+const infoBar = document = document.getElementById('info-bar');
 
 // Elementos do Quiz
 const quizContainer = document.getElementById('quiz-container');

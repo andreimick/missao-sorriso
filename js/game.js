@@ -27,7 +27,7 @@ const quizContainer = document.getElementById('quiz-container');
 const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
-// Configurações do Jogo - Dimensões LÓGICAS do canvas
+// Configurações do Jogo - Dimensões LÓGICAS do canvas (NOVA PROPORÇÃO 16:9)
 const GAME_WIDTH = 960;
 const GAME_HEIGHT = 540;
 canvas.width = GAME_WIDTH;
@@ -390,15 +390,25 @@ toolDrillIcon.addEventListener('click', () => activateTool('drill'));
 toolFillingIcon.addEventListener('click', () => activateTool('filling'));
 
 function startHigienizationPhase() {
+    // Alinha a bounding box para o tamanho atual do canvas
+    const currentToothWidth = canvas.width * 0.5; // Ajusta o tamanho do dente para 50% da largura do canvas
+    const currentToothHeight = currentToothWidth * (80 * 2 / (120 * 2)); // Mantém a proporção do dente
+
+    toothBoundingBox = {
+        x: (canvas.width / 2) - (currentToothWidth / 2),
+        y: (canvas.height / 2) - (currentToothHeight / 2),
+        width: currentToothWidth,
+        height: currentToothHeight
+    };
     generateDirt();
 }
 
 function generateDirt() {
     dirt = [];
     const DIRT_COUNT = 20;
-    // Ajusta a área de geração de sujeira para dentro do toothBoundingBox
-    const paddingX = toothBoundingBox.width * 0.15; // 15% de padding
-    const paddingY = toothBoundingBox.height * 0.15; // 15% de padding
+    // Ajusta a área de geração de sujeira para dentro do toothBoundingBox atual
+    const paddingX = toothBoundingBox.width * 0.15;
+    const paddingY = toothBoundingBox.height * 0.15;
 
     for (let i = 0; i < DIRT_COUNT; i++) {
         const randomIndex = Math.floor(Math.random() * carieImages.length);
@@ -415,11 +425,31 @@ function generateDirt() {
 }
 
 function startTreatmentPhase() {
+    // Alinha a bounding box para o tamanho atual do canvas
+    const currentToothWidth = canvas.width * 0.5;
+    const currentToothHeight = currentToothWidth * (80 * 2 / (120 * 2));
+
+    toothBoundingBox = {
+        x: (canvas.width / 2) - (currentToothWidth / 2),
+        y: (canvas.height / 2) - (currentToothHeight / 2),
+        width: currentToothWidth,
+        height: currentToothHeight
+    };
+
     generateCavity();
 }
 
 function startFillingPhase() {
-    // A cárie já foi removida, a lógica de preenchimento vai usar a mesma posição
+    // Alinha a bounding box para o tamanho atual do canvas
+    const currentToothWidth = canvas.width * 0.5;
+    const currentToothHeight = currentToothWidth * (80 * 2 / (120 * 2));
+
+    toothBoundingBox = {
+        x: (canvas.width / 2) - (currentToothWidth / 2),
+        y: (canvas.height / 2) - (currentToothHeight / 2),
+        width: currentToothWidth,
+        height: currentToothHeight
+    };
 }
 
 function generateCavity() {
@@ -675,6 +705,7 @@ function draw() {
             width: 150,
             height: 225
         };
+        // Alinha a bounding box do dente no centro do canvas lógico
         currentToothBoundingBox = {
             x: (logicalWidth / 2) - (toothWidth / 2),
             y: (logicalHeight / 2) - (toothHeight / 2),
@@ -701,6 +732,7 @@ function draw() {
 
     // Atualiza a posição da cavidade e sujeira para o novo toothBoundingBox
     if (currentState === GAME_STATE.HIGIENIZATION) {
+        // Redefine as sujeiras com base no novo toothBoundingBox
         if (dirt.length === 0) {
             generateDirt();
         }

@@ -63,7 +63,6 @@ let currentTool = '';
 let assetsLoaded = false;
 
 // Dimensões e posicionamento dos personagens e do dente
-// Ajuste o posicionamento para a nova proporção 9:16
 const dentistImageWidth = 200;
 const dentistImageHeight = 300;
 const childImageWidth = 200;
@@ -71,7 +70,7 @@ const childImageHeight = 300;
 const toothImageWidth = 120 * 2;
 const toothImageHeight = 80 * 2;
 
-// Posição do dente
+// Posição do dente (centralizado)
 let toothBoundingBox = {
     x: (GAME_WIDTH / 2) - (toothImageWidth / 2),
     y: (GAME_HEIGHT / 2) - (toothImageHeight / 2),
@@ -356,8 +355,8 @@ function activateTool(toolName) {
     toolCursor.classList.add('hidden');
     const cursorPath = `url('assets/${toolName === 'toothbrush' ? 'toothbrush.png' : 'dental_tools/' + toolName + '.png'}')`;
     canvas.style.cursor = cursorPath;
-    infoBar.classList.add('hidden');
-    helpIcon.classList.add('hidden');
+    infoBar.classList.add('hidden'); // Oculta a barra de info ao ativar ferramenta
+    helpIcon.classList.add('hidden'); // Oculta o ícone de ajuda ao ativar ferramenta
 }
 
 function deactivateTool() {
@@ -368,8 +367,8 @@ function deactivateTool() {
     }
     currentTool = '';
     canvas.style.cursor = 'auto';
-    infoBar.classList.remove('hidden');
-    helpIcon.classList.remove('hidden');
+    infoBar.classList.remove('hidden'); // Mostra a barra de info ao desativar ferramenta
+    helpIcon.classList.remove('hidden'); // Mostra o ícone de ajuda ao desativar ferramenta
 }
 
 // Adiciona os event listeners para as ferramentas
@@ -609,18 +608,18 @@ function draw() {
 
     ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    // Posições dos personagens (fixo no espaço lógico do canvas)
+    // Posições dos personagens (ajustadas para a nova proporção)
     const dentistPos = {
-        x: 50,
-        y: 250,
-        width: 200,
-        height: 300
+        x: 10, // Mais para a esquerda
+        y: GAME_HEIGHT - dentistImageHeight - 20, // Na parte inferior esquerda
+        width: dentistImageWidth,
+        height: dentistImageHeight
     };
     const childPos = {
-        x: 550,
-        y: 250,
-        width: 200,
-        height: 300
+        x: GAME_WIDTH - childImageWidth - 10, // Mais para a direita
+        y: GAME_HEIGHT - childImageHeight - 20, // Na parte inferior direita
+        width: childImageWidth,
+        height: childImageHeight
     };
 
     if (assets['character_dentist.png']) {

@@ -51,7 +51,14 @@ let quizCorrectAnswers = 0;
 let isInteracting = false;
 let isMouseDown = false;
 let dirt = [];
-let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null };
+let cavity = {
+    x: 0,
+    y: 0,
+    radius: 30,
+    damage: 100,
+    filled: 0,
+    image: null
+};
 let currentTool = '';
 let assetsLoaded = false;
 
@@ -72,18 +79,47 @@ let toothBoundingBox = {
     height: toothImageHeight
 };
 
-const quizQuestions = [
-    { question: "Qual a idade ideal para ensinar hábitos de higiene bucal?", options: ["A partir dos 10 anos", "Entre 4 e 6 anos", "Na adolescência", "Apenas quando a criança pede"], answer: "Entre 4 e 6 anos" },
-    { question: "Qual o principal objetivo de projetos sociais na odontologia?", options: ["Apenas tratar doenças", "Vender produtos odontológicos", "Levar prevenção e educação em saúde", "Pesquisar novas tecnologias"], answer: "Levar prevenção e educação em saúde" },
-    { question: "Qual o maior obstáculo para a saúde bucal em comunidades carentes?", options: ["Falta de dentistas", "Falta de hospitais", "Acesso limitado a materiais e medo do dentista", "Desinteresse das famílias"], answer: "Acesso limitado a materiais e medo do dentista" },
-    { question: "O que a odontologia social oferece, além de tratamento?", options: ["Dinheiro", "Dignidade, acolhimento e esperança", "Carros", "Comida"], answer: "Dignidade, acolhimento e esperança" },
-    { question: "Escovar os dentes previne apenas cáries?", options: ["Sim, apenas cáries.", "Não, previne apenas gengivite.", "Sim, e fortalece os ossos.", "Não, ajuda no desenvolvimento da fala e autoestima."], answer: "Não, ajuda no desenvolvimento da fala e autoestima." },
-    { question: "Qual o papel do acadêmico de odontologia em uma comunidade?", options: ["Apenas observar", "Ser um educador em saúde", "Fazer diagnósticos complexos", "Ajudar a construir clínicas"], answer: "Ser um educador em saúde" },
-    { question: "O que significa 'Transformando Sorrisos, Transformando Vidas'?", options: ["Mudar a cor dos dentes", "Apenas realizar tratamentos estéticos", "Ajudar pessoas a sorrirem novamente, impactando suas vidas", "Abrir mais consultórios"], answer: "Ajudar pessoas a sorrirem novamente, impactando suas vidas" },
-    { question: "Qual o tempo ideal de escovação dos dentes?", options: ["30 segundos", "1 minuto", "2 minutos", "5 minutos"], answer: "2 minutos" },
-    { question: "Quando uma criança deve ter sua primeira visita ao dentista?", options: ["Após os 5 anos", "Depois dos 10 anos", "Assim que o primeiro dente de leite nascer", "Apenas na adolescência"], answer: "Assim que o primeiro dente de leite nascer" },
-    { question: "A mastigação está ligada à saúde bucal?", options: ["Sim, diretamente.", "Não, é um processo separado.", "Somente na idade adulta.", "Apenas na infância."], answer: "Sim, diretamente." },
-];
+const quizQuestions = [{
+    question: "Qual a idade ideal para ensinar hábitos de higiene bucal?",
+    options: ["A partir dos 10 anos", "Entre 4 e 6 anos", "Na adolescência", "Apenas quando a criança pede"],
+    answer: "Entre 4 e 6 anos"
+}, {
+    question: "Qual o principal objetivo de projetos sociais na odontologia?",
+    options: ["Apenas tratar doenças", "Vender produtos odontológicos", "Levar prevenção e educação em saúde", "Pesquisar novas tecnologias"],
+    answer: "Levar prevenção e educação em saúde"
+}, {
+    question: "Qual o maior obstáculo para a saúde bucal em comunidades carentes?",
+    options: ["Falta de dentistas", "Falta de hospitais", "Acesso limitado a materiais e medo do dentista", "Desinteresse das famílias"],
+    answer: "Acesso limitado a materiais e medo do dentista"
+}, {
+    question: "O que a odontologia social oferece, além de tratamento?",
+    options: ["Dinheiro", "Dignidade, acolhimento e esperança", "Carros", "Comida"],
+    answer: "Dignidade, acolhimento e esperança"
+}, {
+    question: "Escovar os dentes previne apenas cáries?",
+    options: ["Sim, apenas cáries.", "Não, previne apenas gengivite.", "Sim, e fortalece os ossos.", "Não, ajuda no desenvolvimento da fala e autoestima."],
+    answer: "Não, ajuda no desenvolvimento da fala e autoestima."
+}, {
+    question: "Qual o papel do acadêmico de odontologia em uma comunidade?",
+    options: ["Apenas observar", "Ser um educador em saúde", "Fazer diagnósticos complexos", "Ajudar a construir clínicas"],
+    answer: "Ser um educador em saúde"
+}, {
+    question: "O que significa 'Transformando Sorrisos, Transformando Vidas'?",
+    options: ["Mudar a cor dos dentes", "Apenas realizar tratamentos estéticos", "Ajudar pessoas a sorrirem novamente, impactando suas vidas", "Abrir mais consultórios"],
+    answer: "Ajudar pessoas a sorrirem novamente, impactando suas vidas"
+}, {
+    question: "Qual o tempo ideal de escovação dos dentes?",
+    options: ["30 segundos", "1 minuto", "2 minutos", "5 minutos"],
+    answer: "2 minutos"
+}, {
+    question: "Quando uma criança deve ter sua primeira visita ao dentista?",
+    options: ["Após os 5 anos", "Depois dos 10 anos", "Assim que o primeiro dente de leite nascer", "Apenas na adolescência"],
+    answer: "Assim que o primeiro dente de leite nascer"
+}, {
+    question: "A mastigação está ligada à saúde bucal?",
+    options: ["Sim, diretamente.", "Não, é um processo separado.", "Somente na idade adulta.", "Apenas na infância."],
+    answer: "Sim, diretamente."
+}, ];
 
 let selectedQuizQuestions = [];
 let currentQuizQuestionIndex = 0;
@@ -136,7 +172,7 @@ function loadAssets() {
 function switchScreen(state) {
     const screens = [loadingScreen, startScreen, mainScreen, quizScreen, endScreen];
     screens.forEach(s => s.classList.remove('screen-fade-in', 'screen-fade-out'));
-    
+
     dialogueBox.classList.add('hidden');
     toolCursor.classList.add('hidden');
     quizContainer.classList.add('hidden');
@@ -219,14 +255,20 @@ function showDialogue(dialogue) {
 const story = {
     start: {
         intro: "Olá! Eu sou a Dra. Sofia. Vim te mostrar como é divertido cuidar do sorriso. Tudo bem?",
-        options: [
-            { text: "Sim! Vamos lá!", nextState: 'higienization' },
-            { text: "Estou com um pouco de medo...", nextState: 'dialogue_fear' }
-        ]
+        options: [{
+            text: "Sim! Vamos lá!",
+            nextState: 'higienization'
+        }, {
+            text: "Estou com um pouco de medo...",
+            nextState: 'dialogue_fear'
+        }]
     },
     dialogue_fear: {
         intro: "Não se preocupe, aqui é tudo seguro e sem dor! Vamos começar devagar e aprender a escovar os dentes?",
-        options: [{ text: "Ok, vamos!", nextState: 'higienization' }]
+        options: [{
+            text: "Ok, vamos!",
+            nextState: 'higienization'
+        }]
     },
     higienization: {
         intro: "Agora, pegue a escova na paleta de ferramentas e arraste para limpar a sujeira dos dentes!",
@@ -663,9 +705,7 @@ canvas.addEventListener('touchmove', (e) => {
     if (isInteracting) {
         handleInteraction(e);
     }
-}, {
-    passive: false
-});
+}, { passive: false });
 
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
@@ -673,9 +713,7 @@ canvas.addEventListener('touchstart', (e) => {
         isMouseDown = true;
         handleInteraction(e);
     }
-}, {
-    passive: false
-});
+}, { passive: false });
 
 canvas.addEventListener('touchend', () => {
     handleMouseUp();

@@ -17,16 +17,32 @@ body {
 
 #game-container {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100vw; /* Ocupa 100% da largura da viewport */
+    height: 100vh; /* Ocupa 100% da altura da viewport */
     max-width: 800px;
     max-height: 600px;
-    aspect-ratio: 4 / 3;
+    /* Manter a proporção 4:3 para o conteúdo do jogo */
+    aspect-ratio: 4 / 3; 
     border: 4px solid #fff;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     background-color: #fff;
+
+    /* Centralização usando flexbox (já estava em body, mas reafirmo aqui se for necessário um ajuste mais específico) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Garante que o canvas ocupe todo o espaço do container */
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
 
 .game-screen {
@@ -107,14 +123,6 @@ p {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-#game-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
 
 /* Novo estilo para a caixa de diálogo de instruções */
 .dialogue-box.instructions-overlay {
@@ -197,7 +205,7 @@ p {
 
 #tool-palette {
     position: absolute;
-    top: 45px;
+    top: 10px; /* Ajustado para o topo */
     right: 10px;
     background-color: rgba(255, 255, 255, 0.95);
     padding: 10px;
@@ -243,11 +251,30 @@ p {
     flex-direction: column;
     gap: 30px;
     animation: fadeIn 0.8s ease-in-out;
-    /* Adiciona rolagem para o quiz em telas menores */
-    max-height: 80%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    max-height: 80%; /* Altura máxima para permitir rolagem */
+    overflow-y: auto; /* Adiciona barra de rolagem vertical quando necessário */
+    -webkit-overflow-scrolling: touch; /* Rolagem suave em iOS */
+    /* Estilos para a barra de rolagem */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #00796b #f0f0f0; /* Firefox */
 }
+
+/* Estilo para a barra de rolagem em navegadores baseados em Webkit (Chrome, Safari) */
+#quiz-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#quiz-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+#quiz-container::-webkit-scrollbar-thumb {
+    background-color: #00796b;
+    border-radius: 10px;
+    border: 2px solid #f0f0f0;
+}
+
 
 #quiz-question {
     color: #004d40;
@@ -285,8 +312,8 @@ p {
 
 #help-icon {
     position: absolute;
-    top: 70px;
-    left: 20px;
+    top: 10px; /* Ajustado para o topo */
+    left: 10px;
     width: 40px;
     height: 40px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -361,4 +388,132 @@ p {
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
+}
+
+/* Media Queries para Telas Menores (Celulares) */
+@media (max-width: 768px) {
+    #game-container {
+        border-radius: 0; /* Remover bordas arredondadas para ocupar toda a tela */
+        max-width: 100vw;
+        max-height: 100vh;
+    }
+
+    #start-screen h1, #end-screen h1 {
+        font-size: 2.2em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+
+    .main-btn {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+
+    #dialogue-box {
+        width: 95%;
+        padding: 15px;
+        bottom: 10px;
+    }
+
+    #dialogue-text {
+        font-size: 0.9em;
+    }
+
+    .option-btn {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+
+    #tool-palette {
+        top: 5px; /* Mais para o topo */
+        right: 5px; /* Mais para a direita */
+        padding: 5px;
+        gap: 5px;
+    }
+
+    #tool-palette img {
+        width: 30px;
+        height: 30px;
+    }
+
+    #help-icon {
+        top: 5px; /* Mais para o topo */
+        left: 5px; /* Mais para a esquerda */
+        width: 35px;
+        height: 35px;
+        font-size: 1.2em;
+    }
+
+    #info-bar {
+        top: 5px;
+        left: 45px; /* Ajusta para não colidir com o help-icon */
+        padding: 5px 8px;
+        font-size: 0.9em;
+    }
+
+    #quiz-container {
+        padding: 20px;
+        gap: 20px;
+    }
+
+    #quiz-question {
+        font-size: 1.3em;
+    }
+
+    .quiz-btn {
+        padding: 12px;
+        font-size: 1em;
+    }
+
+    .end-card {
+        padding: 25px;
+    }
+
+    .end-title {
+        font-size: 1.8em;
+    }
+
+    .end-text {
+        font-size: 1em;
+    }
+
+    .score-container p {
+        font-size: 1em;
+    }
+}
+
+/* Ajustes para telas muito pequenas, como iPhone SE */
+@media (max-width: 400px) {
+    #start-screen h1, #end-screen h1 {
+        font-size: 1.8em;
+    }
+
+    p {
+        font-size: 0.9em;
+    }
+
+    .main-btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    #dialogue-text {
+        font-size: 0.85em;
+    }
+
+    .option-btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+
+    #quiz-question {
+        font-size: 1.1em;
+    }
+
+    .quiz-btn {
+        padding: 10px;
+        font-size: 0.9em;
+    }
 }

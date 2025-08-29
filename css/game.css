@@ -386,7 +386,7 @@ p {
     #game-container {
         /*
         Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção.
-        Isso garante que o jogo não fique pequeno demais em telas de celular.
+        Ele vai se encaixar perfeitamente, seja na orientação retrato ou paisagem.
         */
         width: 100vw;
         height: calc(100vw * (9 / 16));
@@ -396,8 +396,7 @@ p {
     }
 
     /* Reduz o tamanho de fontes e botões para melhor usabilidade em mobile */
-    #start-screen h1,
-    #end-screen h1 {
+    #start-screen h1, #end-screen h1 {
         font-size: 2em;
     }
     

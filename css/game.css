@@ -20,23 +20,16 @@ body {
     /* Tamanho padrão para telas grandes (16:9) */
     width: 960px;
     height: 540px;
-    /* Redimensionamento responsivo */
+    /* Adiciona lógica de redimensionamento para telas pequenas */
     max-width: 100vw;
     max-height: 100vh;
-    aspect-ratio: 16 / 9; /* Mantém a proporção 16:9 */
+    aspect-ratio: 16 / 9;
     border: 4px solid #fff;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     background-color: #fff;
 }
-
-/* O canvas dentro do container se ajusta automaticamente */
-#game-canvas {
-    width: 100%;
-    height: 100%;
-}
-
 
 .game-screen {
     position: absolute;
@@ -116,6 +109,14 @@ p {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
 
 /* Novo estilo para a caixa de diálogo de instruções */
 .dialogue-box.instructions-overlay {
@@ -384,16 +385,16 @@ p {
 @media (max-width: 768px) {
     #game-container {
         /*
-        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção 9:16.
-        Define uma largura máxima para que não estique demais em tablets na vertical, por exemplo.
+        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção.
+        Ele vai se encaixar perfeitamente, seja na orientação retrato ou paisagem.
         */
         width: 100vw;
-        height: calc(100vw * (16 / 9)); /* Mantém 9:16 (altura é 16/9 da largura) */
+        height: calc(100vw * (16 / 9));
         max-height: 100vh;
-        max-width: calc(100vh * (9 / 16)); /* Garante que não ultrapasse a altura da tela */
+        max-width: calc(100vh * (9 / 16));
         border-radius: 0;
     }
-    
+
     /* Reduz o tamanho de fontes e botões para melhor usabilidade em mobile */
     #start-screen h1, #end-screen h1 {
         font-size: 2em;
@@ -408,11 +409,12 @@ p {
         font-size: 1em;
     }
     
-    /* Reposiciona a paleta de ferramentas para a parte superior, abaixo do placar */
+    /* Paleta de ferramentas no mobile: mais baixa e centralizada */
     #tool-palette {
-        top: 60px; /* Ajuste para ficar abaixo da info-bar */
+        top: auto; /* Remove o top */
+        bottom: 10px; /* Posiciona na parte inferior */
         right: 50%;
-        left: auto; /* Remove o left para o transform X funcionar corretamente */
+        left: auto;
         transform: translateX(50%);
         padding: 8px;
         gap: 10px;
@@ -444,7 +446,7 @@ p {
     }
 
     #dialogue-box {
-        bottom: 20px; /* Mantém na parte inferior */
+        bottom: 70px; /* Ajusta a posição para não colidir com a paleta de ferramentas */
         width: 95%;
         padding: 15px;
     }

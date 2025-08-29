@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const gameContainer = document.getElementById('game-container');
 const loadingScreen = document.getElementById('loading-screen');
 const startScreen = document.getElementById('start-screen');
-const mainScreen = document.getElementById('main-screen');
+const mainScreen = document = document.getElementById('main-screen');
 const quizScreen = document.getElementById('quiz-screen');
 const endScreen = document.getElementById('end-screen');
 const startBtn = document.getElementById('start-btn');
@@ -81,7 +81,7 @@ const childPosDesktop = {
     height: childImageHeightDesktop
 };
 
-// Posição do dente
+// Posição do dente ORIGINAL para DESKTOP
 const toothImageOriginalWidth = 120 * 2;
 const toothImageOriginalHeight = 80 * 2;
 let toothBoundingBox = {
@@ -390,16 +390,6 @@ toolDrillIcon.addEventListener('click', () => activateTool('drill'));
 toolFillingIcon.addEventListener('click', () => activateTool('filling'));
 
 function startHigienizationPhase() {
-    // Alinha a bounding box para o tamanho atual do canvas
-    const currentToothWidth = canvas.width * 0.5; // Ajusta o tamanho do dente para 50% da largura do canvas
-    const currentToothHeight = currentToothWidth * (80 * 2 / (120 * 2)); // Mantém a proporção do dente
-
-    toothBoundingBox = {
-        x: (canvas.width / 2) - (currentToothWidth / 2),
-        y: (canvas.height / 2) - (currentToothHeight / 2),
-        width: currentToothWidth,
-        height: currentToothHeight
-    };
     generateDirt();
 }
 
@@ -425,31 +415,11 @@ function generateDirt() {
 }
 
 function startTreatmentPhase() {
-    // Alinha a bounding box para o tamanho atual do canvas
-    const currentToothWidth = canvas.width * 0.5;
-    const currentToothHeight = currentToothWidth * (80 * 2 / (120 * 2));
-
-    toothBoundingBox = {
-        x: (canvas.width / 2) - (currentToothWidth / 2),
-        y: (canvas.height / 2) - (currentToothHeight / 2),
-        width: currentToothWidth,
-        height: currentToothHeight
-    };
-
     generateCavity();
 }
 
 function startFillingPhase() {
-    // Alinha a bounding box para o tamanho atual do canvas
-    const currentToothWidth = canvas.width * 0.5;
-    const currentToothHeight = currentToothWidth * (80 * 2 / (120 * 2));
-
-    toothBoundingBox = {
-        x: (canvas.width / 2) - (currentToothWidth / 2),
-        y: (canvas.height / 2) - (currentToothHeight / 2),
-        width: currentToothWidth,
-        height: currentToothHeight
-    };
+    // A cárie já foi removida, a lógica de preenchimento vai usar a mesma posição
 }
 
 function generateCavity() {
@@ -675,10 +645,10 @@ function draw() {
 
     // Aplica a escala para mobile, se necessário
     if (isMobile) {
-        const containerRatio = window.innerWidth / window.innerHeight;
+        const viewportRatio = window.innerWidth / window.innerHeight;
         const gameRatio = logicalWidth / logicalHeight;
 
-        if (containerRatio > gameRatio) {
+        if (viewportRatio > gameRatio) {
             renderScale = window.innerHeight / logicalHeight;
             renderOffsetX = (window.innerWidth - logicalWidth * renderScale) / 2;
         } else {
@@ -691,33 +661,41 @@ function draw() {
     
     // Posições dos personagens e dente dependendo do dispositivo
     let currentDentistPos, currentChildPos;
-    let currentToothBoundingBox;
     
     // Define a posição e tamanho do dente para a tela atual
-    currentToothBoundingBox = {
-        x: (logicalWidth / 2) - (toothImageOriginalWidth / 2),
-        y: (logicalHeight / 2) - (toothImageOriginalHeight / 2),
-        width: toothImageOriginalWidth,
-        height: toothImageOriginalHeight
-    };
+    let toothDisplayWidth = toothImageOriginalWidth;
+    let toothDisplayHeight = toothImageOriginalHeight;
 
     if (isMobile) {
+        // Reduz o tamanho do dente para celular
+        toothDisplayWidth = toothImageOriginalWidth * 0.8; 
+        toothDisplayHeight = toothImageOriginalHeight * 0.8;
+        
         currentDentistPos = {
-            x: 20,
-            y: 100,
-            width: 150,
-            height: 225
+            x: 5, // Mais à esquerda
+            y: 150, // Posição vertical ajustada para não cobrir a info-bar
+            width: 120, // Reduzido
+            height: 180  // Reduzido
         };
         currentChildPos = {
-            x: logicalWidth - 150 - 20,
-            y: 100,
-            width: 150,
-            height: 225
+            x: logicalWidth - 120 - 5, // Mais à direita
+            y: 150, // Posição vertical ajustada
+            width: 120, // Reduzido
+            height: 180  // Reduzido
         };
     } else {
         currentDentistPos = dentistPosDesktop;
         currentChildPos = childPosDesktop;
     }
+
+    // Atualiza toothBoundingBox com as dimensões de exibição
+    toothBoundingBox = {
+        x: (logicalWidth / 2) - (toothDisplayWidth / 2),
+        y: (logicalHeight / 2) - (toothDisplayHeight / 2),
+        width: toothDisplayWidth,
+        height: toothDisplayHeight
+    };
+
 
     if (assets['character_dentist.png']) {
         ctx.drawImage(assets['character_dentist.png'], currentDentistPos.x, currentDentistPos.y, currentDentistPos.width, currentDentistPos.height);
@@ -727,7 +705,7 @@ function draw() {
     }
 
     if (assets['tooth_model.png']) {
-        ctx.drawImage(assets['tooth_model.png'], currentToothBoundingBox.x, currentToothBoundingBox.y, currentToothBoundingBox.width, currentToothBoundingBox.height);
+        ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
     }
 
     // Desenha as cáries
@@ -743,8 +721,8 @@ function draw() {
     }
 
     if (currentState === GAME_STATE.TREATMENT || currentState === GAME_STATE.FILLING) {
-        cavity.x = currentToothBoundingBox.x + currentToothBoundingBox.width / 2;
-        cavity.y = currentToothBoundingBox.y + currentToothBoundingBox.height / 2;
+        cavity.x = toothBoundingBox.x + toothBoundingBox.width / 2;
+        cavity.y = toothBoundingBox.y + toothBoundingBox.height / 2;
 
         if (cavity.damage > 0 && cavity.image) {
             const opacity = cavity.damage / 100;

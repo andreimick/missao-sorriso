@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const gameContainer = document.getElementById('game-container');
 const loadingScreen = document.getElementById('loading-screen');
 const startScreen = document.getElementById('start-screen');
-const mainScreen = document = document.getElementById('main-screen');
+const mainScreen = document.getElementById('main-screen');
 const quizScreen = document.getElementById('quiz-screen');
 const endScreen = document.getElementById('end-screen');
 const startBtn = document.getElementById('start-btn');
@@ -82,8 +82,8 @@ const childPosDesktop = {
 };
 
 // Posição do dente ORIGINAL para DESKTOP
-const toothImageOriginalWidth = 120 * 2;
-const toothImageOriginalHeight = 80 * 2;
+const toothImageOriginalWidth = 240; // 120 * 2
+const toothImageOriginalHeight = 160; // 80 * 2
 let toothBoundingBox = {
     x: (GAME_WIDTH / 2) - (toothImageOriginalWidth / 2),
     y: (GAME_HEIGHT / 2) - (toothImageOriginalHeight / 2),
@@ -625,16 +625,16 @@ function draw() {
     }
 
     const isMobile = window.innerWidth <= 768;
-    
+
     // As dimensões lógicas do canvas
-    const logicalWidth = 960;
-    const logicalHeight = 540;
-    
+    const logicalWidth = GAME_WIDTH;
+    const logicalHeight = GAME_HEIGHT;
+
     // Configura o canvas para o tamanho lógico
     canvas.width = logicalWidth;
     canvas.height = logicalHeight;
     ctx.clearRect(0, 0, logicalWidth, logicalHeight);
-    
+
     // Restaura a transformação do canvas antes de aplicar novas
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -655,37 +655,58 @@ function draw() {
             renderScale = window.innerWidth / logicalWidth;
             renderOffsetY = (window.innerHeight - logicalHeight * renderScale) / 2;
         }
-        
+
         ctx.setTransform(renderScale, 0, 0, renderScale, renderOffsetX, renderOffsetY);
     }
-    
-    // Posições dos personagens e dente dependendo do dispositivo
+
+    // Posicionamento e dimensionamento dos personagens e dente
     let currentDentistPos, currentChildPos;
-    
-    // Define a posição e tamanho do dente para a tela atual
     let toothDisplayWidth = toothImageOriginalWidth;
     let toothDisplayHeight = toothImageOriginalHeight;
 
     if (isMobile) {
         // Reduz o tamanho do dente para celular
-        toothDisplayWidth = toothImageOriginalWidth * 0.8; 
-        toothDisplayHeight = toothImageOriginalHeight * 0.8;
-        
+        toothDisplayWidth = toothImageOriginalWidth * 0.6; // Ajustado para ser visível
+        toothDisplayHeight = toothImageOriginalHeight * 0.6; // Ajustado para ser visível
+
         currentDentistPos = {
-            x: 5, // Mais à esquerda
-            y: 150, // Posição vertical ajustada para não cobrir a info-bar
-            width: 120, // Reduzido
-            height: 180  // Reduzido
+            x: 20, // Mais à esquerda
+            y: logicalHeight - 180, // Mais próximo da base para mobile
+            width: 100, // Reduzido
+            height: 150 // Reduzido
         };
         currentChildPos = {
-            x: logicalWidth - 120 - 5, // Mais à direita
-            y: 150, // Posição vertical ajustada
-            width: 120, // Reduzido
-            height: 180  // Reduzido
+            x: logicalWidth - 100 - 20, // Mais à direita
+            y: logicalHeight - 180, // Mais próximo da base para mobile
+            width: 100, // Reduzido
+            height: 150 // Reduzido
         };
-    } else {
+
+        // Ajusta a posição da caixa de diálogo e paleta para não sobrepor
+        dialogueBox.style.bottom = '10px';
+        dialogueBox.style.width = '90%';
+        dialogueBox.style.left = '5%';
+        toolPalette.style.top = '10px'; // Move para o topo
+        toolPalette.style.left = '50%';
+        toolPalette.style.transform = 'translateX(-50%)';
+        infoBar.style.top = '10px';
+        infoBar.style.right = '10px';
+
+
+    } else { // Desktop
         currentDentistPos = dentistPosDesktop;
         currentChildPos = childPosDesktop;
+
+        // Resetar estilos para desktop
+        dialogueBox.style.bottom = '20px';
+        dialogueBox.style.width = 'auto';
+        dialogueBox.style.left = '50%';
+        dialogueBox.style.transform = 'translateX(-50%)';
+        toolPalette.style.top = 'auto'; // Reset para o padrão
+        toolPalette.style.left = 'auto'; // Reset para o padrão
+        toolPalette.style.transform = 'none'; // Reset para o padrão
+        infoBar.style.top = '20px';
+        infoBar.style.right = '20px';
     }
 
     // Atualiza toothBoundingBox com as dimensões de exibição
@@ -696,6 +717,10 @@ function draw() {
         height: toothDisplayHeight
     };
 
+
+    if (assets['background.jpg']) {
+        ctx.drawImage(assets['background.jpg'], 0, 0, logicalWidth, logicalHeight);
+    }
 
     if (assets['character_dentist.png']) {
         ctx.drawImage(assets['character_dentist.png'], currentDentistPos.x, currentDentistPos.y, currentDentistPos.width, currentDentistPos.height);
@@ -710,8 +735,9 @@ function draw() {
 
     // Desenha as cáries
     if (currentState === GAME_STATE.HIGIENIZATION) {
-        if (dirt.length === 0) {
-            generateDirt();
+        // Gera as cáries se ainda não foram geradas, ou se o toothBoundingBox mudou
+        if (dirt.length === 0 || dirt[0].x < toothBoundingBox.x || dirt[0].x > (toothBoundingBox.x + toothBoundingBox.width)) {
+             generateDirt(); // Regenera sujeira se o posicionamento estiver errado
         }
         dirt.forEach(d => {
             if (d.image) {
@@ -750,7 +776,7 @@ function draw() {
             ctx.fill();
         }
     }
-    
+
     // Redefine a transformação para o padrão após desenhar os elementos escalados
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     requestAnimationFrame(draw);

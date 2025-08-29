@@ -183,8 +183,8 @@ p {
 
 #info-bar {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 10px; /* Mantém no topo */
+    left: 10px; /* Mantém à esquerda */
     background-color: rgba(255, 255, 255, 0.9);
     padding: 10px 15px;
     border-radius: 8px;
@@ -199,8 +199,9 @@ p {
 
 #tool-palette {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    bottom: 10px; /* Posiciona na parte inferior */
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza horizontalmente */
     background-color: rgba(255, 255, 255, 0.95);
     padding: 10px;
     border-radius: 10px;
@@ -303,8 +304,9 @@ p {
 
 #help-icon {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 10px; /* Mantém no topo */
+    right: 10px; /* Posiciona à direita */
+    left: auto; /* Remove o left para não conflitar */
     width: 40px;
     height: 40px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -381,16 +383,13 @@ p {
     margin-top: 20px;
 }
 
-/* Media Query para telas menores */
+/* Media Query para telas menores (mobile) */
 @media (max-width: 768px) {
     #game-container {
-        /*
-        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção 9:16.
-        */
         width: 100vw;
-        height: calc(100vw * (16 / 9));
+        height: calc(100vw * (16 / 9)); /* Mantém a proporção 16:9 para landscape */
         max-height: 100vh;
-        max-width: calc(100vh * (9 / 16));
+        max-width: calc(100vh * (9 / 16)); /* Ajusta para 9:16 em portrait */
         border-radius: 0;
     }
 
@@ -408,13 +407,12 @@ p {
         font-size: 1em;
     }
     
-    /* Reposiciona a paleta de ferramentas de forma mais acessível no celular */
+    /* Paleta de ferramentas no mobile: mais baixa e centralizada */
     #tool-palette {
-        top: auto;
-        bottom: 10px;
+        bottom: 10px; /* Apenas na parte inferior */
         right: 50%;
-        left: auto;
-        transform: translateX(50%);
+        left: auto; /* Remove o left para garantir que o translateX funcione corretamente */
+        transform: translateX(50%); /* Centraliza */
         padding: 8px;
         gap: 10px;
         background-color: rgba(255, 255, 255, 0.9);

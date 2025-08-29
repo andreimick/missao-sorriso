@@ -377,55 +377,48 @@ p {
 }
 
 /* Media Query para telas menores */
-@media (max-width: 800px) {
+@media (max-width: 768px) {
     #game-container {
-        width: 90vw;
-        height: calc(90vw * (600 / 800)); /* Mantém a proporção 4:3 */
-        max-width: 500px;
-        max-height: 375px;
-        border-radius: 10px;
+        /* Centraliza o container e o limita a uma proporção específica */
+        width: 95vw;
+        height: calc(95vw * (600 / 800)); /* Mantém a proporção 4:3 */
+        max-width: 500px; /* Limita a largura máxima no celular para não ficar muito grande */
+        max-height: 375px; /* Limita a altura máxima */
     }
 
+    /* Reduz o tamanho de fontes e botões para melhor usabilidade em mobile */
     #start-screen h1, #end-screen h1 {
         font-size: 2em;
     }
-
     p {
         font-size: 1em;
     }
-
     .main-btn {
         padding: 12px 25px;
         font-size: 1em;
     }
-
     #dialogue-box {
         width: 95%;
         padding: 15px;
         bottom: 10px;
     }
-
     #dialogue-text {
         font-size: 0.9em;
     }
-
     .option-btn {
         padding: 10px 15px;
         font-size: 0.9em;
     }
-
     #tool-palette {
         top: 5px;
         right: 5px;
         padding: 5px;
         gap: 5px;
     }
-
     #tool-palette img {
         width: 30px;
         height: 30px;
     }
-
     #help-icon {
         top: 5px;
         left: 5px;
@@ -433,24 +426,19 @@ p {
         height: 35px;
         font-size: 1.2em;
     }
-
     #info-bar {
         top: 5px;
         left: 45px;
         padding: 5px 8px;
         font-size: 0.9em;
     }
-
     #quiz-container {
         padding: 20px;
         gap: 20px;
-        max-height: 80vh;
     }
-
     #quiz-question {
         font-size: 1.3em;
     }
-
     .quiz-btn {
         padding: 12px;
         font-size: 1em;

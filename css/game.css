@@ -379,11 +379,10 @@ p {
 /* Media Query para telas menores */
 @media (max-width: 768px) {
     #game-container {
-        /* Centraliza o container e o limita a uma proporção específica */
+        /* Ajusta o tamanho do container para caber na tela do celular */
         width: 95vw;
         height: calc(95vw * (600 / 800)); /* Mantém a proporção 4:3 */
-        max-width: 500px; /* Limita a largura máxima no celular para não ficar muito grande */
-        max-height: 375px; /* Limita a altura máxima */
+        border-radius: 10px;
     }
 
     /* Reduz o tamanho de fontes e botões para melhor usabilidade em mobile */
@@ -409,6 +408,7 @@ p {
         padding: 10px 15px;
         font-size: 0.9em;
     }
+    /* Diminui o tamanho das barras de informações */
     #tool-palette {
         top: 5px;
         right: 5px;

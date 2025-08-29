@@ -27,7 +27,7 @@ const quizContainer = document.getElementById('quiz-container');
 const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
-// Configurações do Jogo
+// Configurações do Jogo - Dimensões LÓGICAS do canvas (onde o jogo "pensa")
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 canvas.width = GAME_WIDTH;
@@ -54,7 +54,8 @@ let dirt = [];
 let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null }; 
 let currentTool = '';
 let assetsLoaded = false;
-let toothBoundingBox = { x: 270, y: 300, width: 120 * 2, height: 80 * 2 };
+// A bounding box do dente agora é centralizada, garantindo que ele caiba na tela
+let toothBoundingBox = { x: GAME_WIDTH / 2 - (120 * 2) / 2, y: GAME_HEIGHT / 2 - (80 * 2) / 2, width: 120 * 2, height: 80 * 2 };
 
 const quizQuestions = [
     { question: "Qual a idade ideal para ensinar hábitos de higiene bucal?", options: ["A partir dos 10 anos", "Entre 4 e 6 anos", "Na adolescência", "Apenas quando a criança pede"], answer: "Entre 4 e 6 anos" },
@@ -168,7 +169,6 @@ function switchScreen(state) {
         startFillingPhase();
         showDialogue(story.filling);
     } else if (state === GAME_STATE.QUIZ) {
-        // CORREÇÃO: Removendo o delay para transição instantânea
         mainScreen.classList.add('hidden');
         mainScreen.classList.remove('screen-fade-out');
         quizScreen.classList.remove('hidden');
@@ -257,7 +257,7 @@ helpIcon.addEventListener('click', () => {
             <br><br>
             - **Objetivo:** Limpe os dentes, remova a cárie e restaure o sorriso do nosso paciente.
             <br>
-            - **Como Jogar:** Use a paleta de ferramentas no canto superior direito para selecionar a ferramenta correta para cada etapa.
+            - **Como Jogar:** Use a paleta de ferramentas para selecionar a ferramenta correta para cada etapa.
             <br>
             - **Selecione a ferramenta** e arraste o mouse ou o dedo sobre a área de tratamento para começar a trabalhar.
             <br>
@@ -459,23 +459,31 @@ function endQuiz() {
 
 /**
  * Obtém as coordenadas X e Y do evento, seja de mouse ou toque.
+ * O scaling é feito aqui para que as coordenadas de interação correspondam às coordenadas lógicas do canvas.
  * @param {Event} event O evento do mouse ou toque.
- * @returns {{x: number, y: number}} As coordenadas ajustadas.
+ * @returns {{x: number, y: number}} As coordenadas ajustadas para o espaço lógico do canvas.
  */
 function getCoords(event) {
     const rect = canvas.getBoundingClientRect();
-    let x, y;
+    let clientX, clientY;
     
-    // Verifica se é um evento de toque
     if (event.touches && event.touches.length > 0) {
-        x = event.touches[0].clientX - rect.left;
-        y = event.touches[0].clientY - rect.top;
-    } else { // É um evento de mouse
-        x = event.clientX - rect.left;
-        y = event.clientY - rect.top;
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
     }
-    return { x, y };
+
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    const scaledX = (x / rect.width) * GAME_WIDTH;
+    const scaledY = (y / rect.height) * GAME_HEIGHT;
+
+    return { x: scaledX, y: scaledY };
 }
+
 
 function handleInteraction(e) {
     if (!isInteracting || !isMouseDown) return;
@@ -541,15 +549,16 @@ function draw() {
 
     ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
-    const childPos = { x: 550, y: 250, width: 200, height: 300 };
+    // Personagens removidos para liberar espaço na tela do celular
+    // const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
+    // const childPos = { x: 550, y: 250, width: 200, height: 300 };
     
-    if (assets['character_dentist.png']) {
-        ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
-    }
-    if (assets['character_child.png']) {
-        ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
-    }
+    // if (assets['character_dentist.png']) {
+    //     ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
+    // }
+    // if (assets['character_child.png']) {
+    //     ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
+    // }
     
     if (currentState === GAME_STATE.HIGIENIZATION) {
         if (assets['tooth_model.png']) {
@@ -622,7 +631,7 @@ canvas.addEventListener('mouseup', () => {
 
 // Eventos de Toque
 canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // Evita a rolagem da página
+    e.preventDefault();
     if (isInteracting) {
         handleInteraction(e);
     }
@@ -632,8 +641,7 @@ canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (isInteracting) {
         isMouseDown = true;
-        // Permite a interação já no toque inicial
-        handleInteraction(e); 
+        handleInteraction(e);
     }
 }, { passive: false });
 

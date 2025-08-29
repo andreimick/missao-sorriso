@@ -17,35 +17,19 @@ body {
 
 #game-container {
     position: relative;
-    /* Tamanho padrão para telas grandes */
-    width: 800px;
-    height: 600px;
-    /* Adiciona lógica de redimensionamento para telas pequenas */
-    max-width: 100vw;
-    max-height: 100vh;
+    /* Nova proporção 16:9 */
+    width: 960px;
+    height: 540px;
     border: 4px solid #fff;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     background-color: #fff;
+    /* Redimensionamento para telas menores */
+    max-width: 100vw;
+    max-height: 100vh;
+    aspect-ratio: 16 / 9;
 }
-
-/* Regra para garantir que o contêiner se ajuste à tela mantendo a proporção */
-@media (max-aspect-ratio: 4/3) {
-    #game-container {
-        width: 100vh;
-        height: 75vh;
-        /* Proporção 4:3 */
-    }
-}
-
-@media (min-aspect-ratio: 4/3) {
-    #game-container {
-        width: 100vw;
-        height: 75vw;
-    }
-}
-
 
 .game-screen {
     position: absolute;
@@ -79,29 +63,20 @@ body {
 }
 
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 #start-screen {
     cursor: default;
 }
 
-#start-screen h1,
-#end-screen h1 {
+#start-screen h1, #end-screen h1 {
     color: #00796b;
     font-size: 3em;
     margin-bottom: 10px;
@@ -410,17 +385,17 @@ p {
 @media (max-width: 768px) {
     #game-container {
         /*
-        Esta é a chave para a nova abordagem:
-        Usa o mínimo entre a largura da tela (100vw) e a altura (100vh)
-        para dimensionar o container. Isso garante que o jogo sempre
-        caiba na tela, seja no modo retrato ou paisagem.
-        A proporção de 4:3 é mantida dinamicamente.
+        Ajusta o container para ocupar o máximo de espaço, mantendo a proporção de 16:9.
+        Isso garante que o jogo não fique pequeno demais em telas de celular.
         */
-        width: min(95vw, calc(95vh * (800 / 600)));
-        height: min(calc(95vw * (600 / 800)), 95vh);
-        border-radius: 10px;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100%;
+        max-height: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 0;
     }
-
+    
     /* Reduz o tamanho de fontes e botões para melhor usabilidade em mobile */
     #start-screen h1,
     #end-screen h1 {
@@ -451,12 +426,15 @@ p {
         font-size: 0.9em;
     }
 
-    /* Diminui o tamanho e o espaçamento das barras de informações */
+    /* Posiciona a paleta de ferramentas e o ícone de ajuda de forma mais compacta */
     #tool-palette {
         top: 5px;
         right: 5px;
         padding: 5px;
         gap: 5px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     #tool-palette img {

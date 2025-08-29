@@ -27,9 +27,9 @@ const quizContainer = document.getElementById('quiz-container');
 const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
-// Configurações do Jogo - Dimensões LÓGICAS do canvas (NOVA PROPORÇÃO 16:9)
-const GAME_WIDTH = 960;
-const GAME_HEIGHT = 540;
+// Configurações do Jogo - Dimensões LÓGICAS do canvas (NOVA PROPORÇÃO 9:16)
+const GAME_WIDTH = 540;
+const GAME_HEIGHT = 960;
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 
@@ -63,7 +63,7 @@ let currentTool = '';
 let assetsLoaded = false;
 
 // Dimensões e posicionamento dos personagens e do dente
-// Ajuste o posicionamento para a nova proporção 16:9
+// Ajuste o posicionamento para a nova proporção 9:16
 const dentistImageWidth = 200;
 const dentistImageHeight = 300;
 const childImageWidth = 200;

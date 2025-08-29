@@ -20,14 +20,14 @@ const toolPalette = document.getElementById('tool-palette');
 const toolBrushIcon = document.getElementById('tool-toothbrush');
 const toolDrillIcon = document.getElementById('tool-drill');
 const toolFillingIcon = document.getElementById('tool-filling');
-const infoBar = document = document.getElementById('info-bar');
+const infoBar = document.getElementById('info-bar');
 
 // Elementos do Quiz
 const quizContainer = document.getElementById('quiz-container');
 const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
-// Configurações do Jogo - Dimensões LÓGICAS do canvas (onde o jogo "pensa")
+// Configurações do Jogo - Dimensões LÓGICAS do canvas
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 canvas.width = GAME_WIDTH;
@@ -51,11 +51,18 @@ let quizCorrectAnswers = 0;
 let isInteracting = false;
 let isMouseDown = false;
 let dirt = [];
-let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null }; 
+let cavity = { x: 0, y: 0, radius: 30, damage: 100, filled: 0, image: null };
 let currentTool = '';
 let assetsLoaded = false;
-// Posição centralizada para o dente na tela
-let toothBoundingBox = { x: 270, y: 300, width: 120 * 2, height: 80 * 2 };
+// A bounding box do dente é centralizada para caber na tela
+const toothImageWidth = 120 * 2;
+const toothImageHeight = 80 * 2;
+let toothBoundingBox = { 
+    x: (GAME_WIDTH / 2) - (toothImageWidth / 2), 
+    y: (GAME_HEIGHT / 2) - (toothImageHeight / 2), 
+    width: toothImageWidth, 
+    height: toothImageHeight 
+};
 
 const quizQuestions = [
     { question: "Qual a idade ideal para ensinar hábitos de higiene bucal?", options: ["A partir dos 10 anos", "Entre 4 e 6 anos", "Na adolescência", "Apenas quando a criança pede"], answer: "Entre 4 e 6 anos" },
@@ -549,7 +556,7 @@ function draw() {
 
     ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    // Personagens são incluídos novamente aqui
+    // Posições dos personagens para manter o layout original no desktop
     const dentistPos = { x: 50, y: 250, width: 200, height: 300 };
     const childPos = { x: 550, y: 250, width: 200, height: 300 };
     
@@ -560,6 +567,7 @@ function draw() {
         ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
     }
     
+    // Desenha o dente e a sujeira/cárie com o novo posicionamento centralizado
     if (currentState === GAME_STATE.HIGIENIZATION) {
         if (assets['tooth_model.png']) {
             ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);

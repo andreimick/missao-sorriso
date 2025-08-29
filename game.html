@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Sorriso: O Jogo</title>
+    <link rel="stylesheet" href="css/game.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="loading-screen" class="game-screen active">
+            <h1>Carregando Recursos...</h1>
+        </div>
+
+        <div id="start-screen" class="game-screen hidden">
+            <h1>Preparar... Apontar... Sorrir!</h1>
+            <p>Seja bem-vindo, futuro dentista! Sua missão é transformar sorrisos, começando por uma criança. Prepare-se para educar, acolher e cuidar.</p>
+            <button id="start-btn" class="main-btn">Começar Missão</button>
+        </div>
+
+        <div id="main-screen" class="game-screen hidden">
+            <canvas id="game-canvas"></canvas>
+            <div id="dialogue-box" class="hidden">
+                <p id="dialogue-text"></p>
+                <div id="dialogue-options"></div>
+            </div>
+            <div id="info-bar">
+                <span id="score-display">Pontos: 0</span>
+            </div>
+            <div id="tool-cursor" class="hidden"></div>
+            <div id="help-icon" class="hidden">?</div>
+            <div id="tool-palette" class="hidden">
+                <img id="tool-toothbrush" src="assets/toothbrush.png" alt="Escova de dentes">
+                <img id="tool-drill" src="assets/dental_tools/drill.png" alt="Broca">
+                <img id="tool-filling" src="assets/dental_tools/filling.png" alt="Preenchimento">
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="game-screen hidden">
+            <div id="quiz-container">
+                <h2 id="quiz-question"></h2>
+                <div id="quiz-options"></div>
+            </div>
+        </div>
+
+        <div id="end-screen" class="game-screen hidden">
+            <h1 id="end-title"></h1>
+            <p id="end-text"></p>
+            <button id="restart-btn" class="main-btn">Reiniciar Missão</button>
+            <a href="index.html" class="main-btn">Voltar para a Equipe</a>
+        </div>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+/* game.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+    text-align: center;
+    cursor: auto;
+}
+
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: 4px solid #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background-size: cover;
+    background-position: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Efeito de transição */
+.screen-fade-out {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+.screen-fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#start-screen {
+    cursor: default;
+}
+
+#start-screen h1, #end-screen h1 {
+    color: #00796b;
+    font-size: 3em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+p {
+    font-size: 1.2em;
+    max-width: 600px;
+}
+
+.main-btn {
+    background-color: #00796b;
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.main-btn:hover {
+    background-color: #004d40;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Novo estilo para a caixa de diálogo de instruções */
+.dialogue-box.instructions-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    text-align: center;
+}
+
+#dialogue-box {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 600px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    z-index: 20;
+    transition: all 0.5s ease-in-out;
+    text-align: center;
+}
+
+#dialogue-text {
+    margin: 0 0 20px 0;
+    font-size: 1.1em;
+    line-height: 1.5;
+}
+
+#dialogue-options {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.option-btn {
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.option-btn:hover {
+    background-color: #004d40;
+    transform: translateY(-1px);
+}
+
+#info-bar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#tool-cursor {
+    display: none;
+}
+
+#tool-palette {
+    position: absolute;
+    top: 45px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#tool-palette img {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+#tool-palette img:hover {
+    transform: scale(1.1);
+}
+
+#tool-palette img.selected {
+    border-color: #00796b;
+    box-shadow: 0 0 5px rgba(0, 121, 107, 0.8);
+}
+
+#quiz-screen {
+    background: linear-gradient(135deg, #e0f7fa, #a7ffeb);
+    z-index: 20;
+}
+
+#quiz-container {
+    width: 90%;
+    max-width: 650px;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+#quiz-question {
+    color: #004d40;
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+#quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quiz-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 18px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.quiz-btn:hover:not(:disabled) {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.quiz-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+#help-icon {
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #00796b;
+    cursor: pointer;
+    z-index: 50;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+#help-icon:hover {
+    transform: scale(1.1);
+}
+
+#end-screen {
+    background: linear-gradient(135deg, #a7ffeb, #e0f7fa);
+    z-index: 20;
+}
+
+/* Novos estilos para a tela final */
+.end-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn 0.8s ease-in-out;
+    max-width: 600px;
+}
+
+.end-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #004d40;
+    margin: 0;
+}
+
+.end-text {
+    font-size: 1.2em;
+    color: #555;
+    margin: 0;
+}
+
+.score-container {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.score-container p {
+    margin: 5px 0;
+    font-size: 1.3em;
+}
+
+.score-container b {
+    color: #00796b;
+    font-weight: 800;
+}
+
+.end-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}

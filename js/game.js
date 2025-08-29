@@ -18,6 +18,7 @@ const toolCursor = document.getElementById('tool-cursor');
 const helpIcon = document.getElementById('help-icon');
 const toolPalette = document.getElementById('tool-palette');
 const toolBrushIcon = document.getElementById('tool-toothbrush');
+// AQUI ESTAVA O ERRO DE SINTAXE: 'document('tool-drill')' e 'document('tool-filling')'
 const toolDrillIcon = document.getElementById('tool-drill');
 const toolFillingIcon = document.getElementById('tool-filling');
 const infoBar = document.getElementById('info-bar');
@@ -652,7 +653,7 @@ function draw() {
 
         ctx.setTransform(scale, 0, 0, scale, x, y);
     }
-    
+
     // Posições dos personagens e dente dependendo do dispositivo
     let currentDentistPos, currentChildPos;
     let currentToothBoundingBox;

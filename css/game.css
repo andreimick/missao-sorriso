@@ -385,13 +385,12 @@ p {
 @media (max-width: 768px) {
     #game-container {
         /*
-        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção.
-        Ele vai se encaixar perfeitamente, seja na orientação retrato ou paisagem.
+        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção 9:16.
         */
         width: 100vw;
-        height: calc(100vw * (9 / 16));
+        height: calc(100vw * (16 / 9));
         max-height: 100vh;
-        max-width: calc(100vh * (16 / 9));
+        max-width: calc(100vh * (9 / 16));
         border-radius: 0;
     }
 

@@ -381,12 +381,11 @@ p {
     margin-top: 20px;
 }
 
-/* Media Query para telas menores */
+/* Media Query para telas menores (mobile) */
 @media (max-width: 768px) {
     #game-container {
         /*
-        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção.
-        Ele vai se encaixar perfeitamente, seja na orientação retrato ou paisagem.
+        Ajusta o tamanho do container para caber na tela do celular, mantendo a proporção 9:16.
         */
         width: 100vw;
         height: calc(100vw * (16 / 9));
@@ -409,12 +408,11 @@ p {
         font-size: 1em;
     }
     
-    /* Reposiciona a paleta de ferramentas de forma mais acessível no celular */
+    /* Reposiciona a paleta de ferramentas para a parte superior, abaixo do placar */
     #tool-palette {
-        top: auto;
-        bottom: 10px;
+        top: 60px; /* Ajuste para ficar abaixo da info-bar */
         right: 50%;
-        left: auto;
+        left: auto; /* Remove o left para o transform X funcionar corretamente */
         transform: translateX(50%);
         padding: 8px;
         gap: 10px;
@@ -446,7 +444,7 @@ p {
     }
 
     #dialogue-box {
-        bottom: 70px; /* Ajusta a posição para não colidir com a paleta de ferramentas */
+        bottom: 20px; /* Mantém na parte inferior */
         width: 95%;
         padding: 15px;
     }

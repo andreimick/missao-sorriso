@@ -27,9 +27,9 @@ const quizContainer = document.getElementById('quiz-container');
 const quizQuestionText = document.getElementById('quiz-question');
 const quizOptionsContainer = document.getElementById('quiz-options');
 
-// Configurações do Jogo - Dimensões LÓGICAS do canvas (NOVA PROPORÇÃO 9:16)
-const GAME_WIDTH = 540;
-const GAME_HEIGHT = 960;
+// Configurações do Jogo - Dimensões LÓGICAS do canvas (desktop)
+const GAME_WIDTH = 960;
+const GAME_HEIGHT = 540;
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 
@@ -62,11 +62,47 @@ let cavity = {
 let currentTool = '';
 let assetsLoaded = false;
 
-// Dimensões e posicionamento dos personagens e do dente
-const dentistImageWidth = 200;
-const dentistImageHeight = 300;
-const childImageWidth = 200;
-const childImageHeight = 300;
+// Dimensões e posicionamento dos personagens para DESKTOP
+const dentistImageWidthDesktop = 200;
+const dentistImageHeightDesktop = 300;
+const childImageWidthDesktop = 200;
+const childImageHeightDesktop = 300;
+
+// Posições dos personagens para DESKTOP (canto inferior esquerdo e direito)
+const dentistPosDesktop = {
+    x: 10,
+    y: GAME_HEIGHT - dentistImageHeightDesktop - 20,
+    width: dentistImageWidthDesktop,
+    height: dentistImageHeightDesktop
+};
+const childPosDesktop = {
+    x: GAME_WIDTH - childImageWidthDesktop - 10,
+    y: GAME_HEIGHT - childImageHeightDesktop - 20,
+    width: childImageWidthDesktop,
+    height: childImageHeightDesktop
+};
+
+// Dimensões e posicionamento dos personagens para MOBILE (NOVAS POSIÇÕES)
+const dentistImageWidthMobile = 120;
+const dentistImageHeightMobile = 180;
+const childImageWidthMobile = 120;
+const childImageHeightMobile = 180;
+
+// Posições dos personagens para MOBILE (canto superior esquerdo e direito)
+const dentistPosMobile = {
+    x: 5,
+    y: 5,
+    width: dentistImageWidthMobile,
+    height: dentistImageHeightMobile
+};
+const childPosMobile = {
+    x: GAME_WIDTH - childImageWidthMobile - 5, // Ajusta para a nova GAME_WIDTH mobile
+    y: 5,
+    width: childImageWidthMobile,
+    height: childImageHeightMobile
+};
+
+
 const toothImageWidth = 120 * 2;
 const toothImageHeight = 80 * 2;
 
@@ -608,32 +644,57 @@ function draw() {
 
     ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-    // Posições dos personagens (ajustadas para a nova proporção)
-    const dentistPos = {
-        x: 10, // Mais para a esquerda
-        y: GAME_HEIGHT - dentistImageHeight - 20, // Na parte inferior esquerda
-        width: dentistImageWidth,
-        height: dentistImageHeight
-    };
-    const childPos = {
-        x: GAME_WIDTH - childImageWidth - 10, // Mais para a direita
-        y: GAME_HEIGHT - childImageHeight - 20, // Na parte inferior direita
-        width: childImageWidth,
-        height: childImageHeight
-    };
+    // Lógica para desenhar os personagens dependendo do tamanho da tela
+    if (window.innerWidth <= 768) { // Considera mobile
+        // Ajusta GAME_WIDTH e GAME_HEIGHT para mobile (proporção 9:16)
+        canvas.width = 540;
+        canvas.height = 960;
+        
+        // Reposiciona o dente para o centro da nova tela mobile
+        toothBoundingBox = {
+            x: (canvas.width / 2) - (toothImageWidth / 2),
+            y: (canvas.height / 2) - (toothImageHeight / 2),
+            width: toothImageWidth,
+            height: toothImageHeight
+        };
 
-    if (assets['character_dentist.png']) {
-        ctx.drawImage(assets['character_dentist.png'], dentistPos.x, dentistPos.y, dentistPos.width, dentistPos.height);
-    }
-    if (assets['character_child.png']) {
-        ctx.drawImage(assets['character_child.png'], childPos.x, childPos.y, childPos.width, childPos.height);
+        if (assets['character_dentist.png']) {
+            ctx.drawImage(assets['character_dentist.png'], dentistPosMobile.x, dentistPosMobile.y, dentistPosMobile.width, dentistPosMobile.height);
+        }
+        if (assets['character_child.png']) {
+            // Ajusta a posição X da criança para a nova GAME_WIDTH
+            const adjustedChildPosMobileX = canvas.width - childImageWidthMobile - 5;
+            ctx.drawImage(assets['character_child.png'], adjustedChildPosMobileX, childPosMobile.y, childPosMobile.width, childPosMobile.height);
+        }
+    } else { // Desktop
+        canvas.width = GAME_WIDTH;
+        canvas.height = GAME_HEIGHT;
+
+        // Reposiciona o dente para o centro da tela desktop original
+        toothBoundingBox = {
+            x: (GAME_WIDTH / 2) - (toothImageWidth / 2),
+            y: (GAME_HEIGHT / 2) - (toothImageHeight / 2),
+            width: toothImageWidth,
+            height: toothImageHeight
+        };
+
+        if (assets['character_dentist.png']) {
+            ctx.drawImage(assets['character_dentist.png'], dentistPosDesktop.x, dentistPosDesktop.y, dentistPosDesktop.width, dentistPosDesktop.height);
+        }
+        if (assets['character_child.png']) {
+            ctx.drawImage(assets['character_child.png'], childPosDesktop.x, childPosDesktop.y, childPosDesktop.width, childPosDesktop.height);
+        }
     }
 
-    if (currentState === GAME_STATE.HIGIENIZATION) {
+
+    if (currentState === GAME_STATE.HIGIENIZATION || currentState === GAME_STATE.TREATMENT || currentState === GAME_STATE.FILLING) {
         if (assets['tooth_model.png']) {
             ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
         }
+    }
 
+
+    if (currentState === GAME_STATE.HIGIENIZATION) {
         dirt.forEach(d => {
             if (d.image) {
                 ctx.drawImage(d.image, d.x - d.width / 2, d.y - d.height / 2, d.width, d.height);
@@ -642,10 +703,6 @@ function draw() {
     }
 
     if (currentState === GAME_STATE.TREATMENT || currentState === GAME_STATE.FILLING) {
-        if (assets['tooth_model.png']) {
-            ctx.drawImage(assets['tooth_model.png'], toothBoundingBox.x, toothBoundingBox.y, toothBoundingBox.width, toothBoundingBox.height);
-        }
-
         if (cavity.damage > 0 && cavity.image) {
             const opacity = cavity.damage / 100;
             ctx.save();
